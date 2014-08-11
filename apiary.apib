@@ -1,17 +1,30 @@
 FORMAT: 1A
-HOST: http://www.google.com
+HOST: https://sandbox-api01.clanofthecloud.com
 
-# ClanOfthecloud
-Notes API is a *short texts saving* service similar to its physical paper presence on your table.
+# ClanOfthecloud APIs
 
-# Group Notes
-Notes related resources of the **Notes API**
+[ClanOfTheCloud](http://www.clanofthecloud.com) is a Mobile Gaming Backend as a Service (Baas) Company. You can create an account on our website, 
+and try us with your next social game! We're multiplateform and offer a full API.
+
+## Authentication
+
+Once you've created an account, you can provision a Game in the FrontOffice application.
+
+We're using a classic APIKEY / APISECRET couple to authenticate all requests.
+
+# Gamers routes 
+
+In addition to the Authentication above, gamers are identified (at least as `anonymous`).
 
 ### implementation
-`details d'implem.`
+* devrait on utiliser gamers plutôt que users ?
 
-## Notes Collection [/notes]
-### List all Notes [GET]
+## Gamers Collection [/gamers]
+### Log in [POST]
++ Request (application/json)
+
+        { "title": "Buy cheese and bread for breakfast." }
+
 + Response 200 (application/json)
 
         [{
@@ -20,7 +33,7 @@ Notes related resources of the **Notes API**
           "id": 2, "title": "Pick-up posters from post-office"
         }]
 
-### Create a Note [POST]
+### Log out [POST]
 + Request (application/json)
 
         { "title": "Buy cheese and bread for breakfast." }
