@@ -25,7 +25,8 @@ In addition to the Authentication above, gamers are identified (at least as `ano
     _ca ne marche que por les cotc login, puisque pour facebook il nous faut un token.
 en revanche, une fois "identifier", le login return in id/token a utiliser dans Basic/Atuh_
 
-## Gamers Collection [/gamers]
+## Gamers [/gamers]
+
 ### Sign up [PUT]
 ## register a new gamer
 
@@ -53,7 +54,8 @@ en revanche, une fois "identifier", le login return in id/token a utiliser dans 
 + Response 200 (application/json)
 
         {
-            "authtoken" : "resuable token used by gamer related requests" 
+            "gamerid" : "identifer of the user" 
+            "gamertoken" : "resuable token used by gamer related requests" 
         }
 
 + Response 401 (application/json)
@@ -64,13 +66,20 @@ en revanche, une fois "identifier", le login return in id/token a utiliser dans 
             "data" : "optional error data", 
         }
 
+## Gamer  [/gamer/{gamerid}]
+
++ Parameters
+
+    + gamerid (string required) ... the gamer identifer
+
 
 ### Sign in [GET]
 ## login an existing gamer
-###### body description
-|Field|Description|Value|
+
+###### header description
+|Header Field|Description|Value|
 |---|---|---|
-|authtoken|string, require| token returned during the sign up
+|Authenitcation|string, require| Authentication : Basic token
 
 ###### response description
 |Field|Description|Value|
@@ -82,9 +91,9 @@ en revanche, une fois "identifier", le login return in id/token a utiliser dans 
 
 + Request (application/json)
 
-        {
-            "authtoken" : token returned by sign up request 
-        }
+    + Headers
+    
+            Authentication : Basic <authtoken>
 
 + Response 200 (application/json)
 
@@ -97,8 +106,33 @@ en revanche, une fois "identifier", le login return in id/token a utiliser dans 
 
 + Response 401 (application/json)
 
+## Gamer VFS  [/gamer/{gamerid}/vfs]
+
++ Parameters
+
+    + gamerid (string required) ... the gamer identifer
+
+
+### retieve gamer's data [GET]
+
++ Request (application/json)
+
+    + Headers
+    
+            Authentication : Basic <authtoken>
+
++ Response 200 (application/json)
+
+        {
+            "gamervfs" : json,
+        }
+
++ Response 401 (application/json)
+
         {
             "code" : "Unauthorized",
             "message" : "optional short error message", 
             "data" : "optional error data", 
-        }
+        }        
+        
+
