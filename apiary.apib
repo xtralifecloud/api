@@ -54,8 +54,8 @@ en revanche, une fois "identifier", le login return in id/token a utiliser dans 
 + Response 200 (application/json)
 
         {
-            "gamerid" : "identifer of the user" 
-            "gamertoken" : "resuable token used by gamer related requests" 
+            "gamerid" : "identifier of the user" 
+            "gamertoken" : "reusable token used by gamer related requests" 
         }
 
 + Response 401 (application/json)
@@ -68,6 +68,9 @@ en revanche, une fois "identifier", le login return in id/token a utiliser dans 
 
 ## Gamer  [/gamer/{gamerid}]
 
+### Implementation
+    Si le gamer est identifié par l'authentification, est-ce qu'on a vraiment besoin de respecifier le gamer dans l'url ?
+
 + Parameters
 
     + gamerid (string required) ... the gamer identifer
@@ -79,7 +82,7 @@ en revanche, une fois "identifier", le login return in id/token a utiliser dans 
 ###### header description
 |Header Field|Description|Value|
 |---|---|---|
-|Authenitcation|string, require| Authentication : Basic token
+|Authentication|string, require| Authentication : Basic token
 
 ###### response description
 |Field|Description|Value|
