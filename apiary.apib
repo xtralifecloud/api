@@ -26,7 +26,21 @@ In addition to the Authentication above, gamers are identified (at least as `ano
 en revanche, une fois "identifier", le login return in id/token a utiliser dans Basic/Atuh_
 
 ## Gamers Collection [/gamers]
-### Log in [POST]
+### Sign up [PUT]
+## register a new gamer
+
+###### body description
+
+|Field|Description|Value|
+|---|---|---|
+|network|string, require|can be one of ["email", "facebook", "googleplus", "anonymous"]
+|facebooktoken|string, required when {network=facebook}| the token returned by facebook login
+|googleplustoken|string, required when {network=googleplus}| the token returned by google login
+|email|string, required when {network=email}| gamer well formed email
+|password|string, required when {network=email}| gamer registered password
+
+*no fields are needed in case of 'anonymous' network*
+
 
 + Request (application/json)
 
@@ -39,7 +53,6 @@ en revanche, une fois "identifier", le login return in id/token a utiliser dans 
 + Response 200 (application/json)
 
         {
-            "authuser" : "authenticated identifier for gamer",
             "authtoken" : "resuable token used by gamer related requests" 
         }
 
@@ -52,31 +65,40 @@ en revanche, une fois "identifier", le login return in id/token a utiliser dans 
         }
 
 
-### Log out [GET]
+### Sign in [GET]
+## login an existing gamer
+###### body description
+|Field|Description|Value|
+|---|---|---|
+|authtoken|string, require| token returned during the sign up
+
+###### response description
+|Field|Description|Value|
+|---|---|---|
+|profile|json| gamer's profile, including "name", "email", "nickname", ...
+|vfs|json| list of key/value associated to the app/game
+|gamervfs|json| list of key/value associated to the gamer
+|matches|json| array of match currently in open state of the gamer
+
 + Request (application/json)
 
-        { "title": "Buy cheese and bread for breakfast." }
+        {
+            "authtoken" : token returned by sign up request 
+        }
 
-+ Response 201 (application/json)
-
-        { "id": 3, "title": "Buy cheese and bread for breakfast." }
-
-## Note [/notes/{id}]
-A single Note object with all its details
-
-+ Parameters
-    + id (required, number, `1`) ... Numeric `id` of the Note to perform action with. Has example value.
-
-### Retrieve a Note [GET]
 + Response 200 (application/json)
 
-    + Header
+        {
+            "profile" : json,
+            "vfs" : json,
+            "gamervfs" : json,
+            "matches" : json array
+        }
 
-            X-My-Header: The Value
++ Response 401 (application/json)
 
-    + Body
-
-            { "id": 2, "title": "Pick-up posters from post-office" }
-
-### Remove a Note [DELETE]
-+ Response 204
+        {
+            "code" : "Unauthorized",
+            "message" : "optional short error message", 
+            "data" : "optional error data", 
+        }
