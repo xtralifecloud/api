@@ -18,10 +18,16 @@ In addition to the Authentication above, gamers are identified (at least as `ano
 
 ### implementation
 * devrait on utiliser gamers plutôt que users ?
+
+    _eventuellement on pourrait etre utilisé dans des app autres que des jeux, mais comme on a basé toute la comm sur le jeu, va pour gamers!_
 * devrait on utiliser l'authentification Basic pour identifier le gamer ?
+
+    _ca ne marche que por les cotc login, puisque pour facebook il nous faut un token.
+en revanche, une fois "identifier", le login return in id/token a utiliser dans Basic/Atuh_
 
 ## Gamers Collection [/gamers]
 ### Log in [POST]
+
 + Request (application/json)
 
         { 
