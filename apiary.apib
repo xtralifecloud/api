@@ -24,15 +24,27 @@ In addition to the Authentication above, gamers are identified (at least as `ano
 ### Log in [POST]
 + Request (application/json)
 
-        { "title": "Buy cheese and bread for breakfast." }
+        { 
+            "network": "cotc|facebook|googleplus|anonymous",
+            "id" : "network dependant id",
+            "token" : "network dependant authentification"
+        }
 
 + Response 200 (application/json)
 
-        [{
-          "id": 1, "title": "Jogging in park"
-        }, {
-          "id": 2, "title": "Pick-up posters from post-office"
-        }]
+        {
+            "authuser" : "authenticated identifier for gamer",
+            "authtoken" : "resuable token used by gamer related requests" 
+        }
+
++ Response 401 (application/json)
+
+        {
+            "code" : "Unauthorized",
+            "message" : "optional short error message", 
+            "data" : "optional error data", 
+        }
+
 
 ### Log out [GET]
 + Request (application/json)
