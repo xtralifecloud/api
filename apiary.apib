@@ -17,18 +17,23 @@ We're using a classic APIKEY / APISECRET couple to authenticate all requests.
 In addition to the Authentication above, gamers are identified (at least as `anonymous`).
 
 ### implementation
-* devrait on utiliser gamers plutôt que users ?
+* utilisation de Authentication : Basic `token`
 
-    _eventuellement on pourrait etre utilisé dans des app autres que des jeux, mais comme on a basé toute la comm sur le jeu, va pour gamers!_
-* devrait on utiliser l'authentification Basic pour identifier le gamer ?
+    _proposal :_
+    
+    * _for a non gamer route, `token` could be APISECRET:APIKEY, called **apptoken**_
+    * _for a gamer route, `token` is the one returned by sign in/up methods which is an random-key in our cache (redis) pointing a json = { appid: xxx, userid: zzz, ... }, called **gamertoken**_
 
-    _ca ne marche que por les cotc login, puisque pour facebook il nous faut un token.
-en revanche, une fois "identifier", le login return in id/token a utiliser dans Basic/Atuh_
 
-## Gamers [/gamers]
+## Gamer Session [/gamer/session]
 
-### Sign up [PUT]
-## register a new gamer
+### sign in [PUT]
+## register a new gamer, or reconnect after a lost of gamertoken
+this appends when at game first launch, after reinstalling game or after a logout
+
+|Header Field|Description|Value|
+|---|---|---|
+|Authentication|string, require| Authentication : Basic **apptoken**
 
 ###### body description
 
@@ -41,6 +46,14 @@ en revanche, une fois "identifier", le login return in id/token a utiliser dans 
 |password|string, required when {network=email}| gamer registered password
 
 *no fields are needed in case of 'anonymous' network*
+
+###### response description
+|Field|Description|Value|
+|---|---|---|
+|profile|json| gamer's profile, including "name", "email", "nickname", ...
+|vfs|json| list of key/value associated to the app/game
+|gamervfs|json| list of key/value associated to the gamer
+|matches|json| array of match currently in open state of the gamer
 
 
 + Request (application/json)
@@ -66,29 +79,22 @@ en revanche, une fois "identifier", le login return in id/token a utiliser dans 
             "data" : "optional error data", 
         }
 
-## Gamer  [/gamer]
-
-### Sign in [GET]
-## login an existing gamer
-
+### login [GET]
+## login an existing gamer with an already known gamertoken
+this append when the gamertoken was saved
 ###### header description
 |Header Field|Description|Value|
 |---|---|---|
-|Authentication|string, require| Authentication : Basic token
+|Authentication|string, require| Authentication : Basic **apptoken**
 
 ###### response description
-|Field|Description|Value|
-|---|---|---|
-|profile|json| gamer's profile, including "name", "email", "nickname", ...
-|vfs|json| list of key/value associated to the app/game
-|gamervfs|json| list of key/value associated to the gamer
-|matches|json| array of match currently in open state of the gamer
+this request as the same response a the login request!
 
 + Request (application/json)
 
     + Headers
     
-            Authentication : Basic <authtoken>
+            Authentication : Basic gamertoken
 
 + Response 200 (application/json)
 
@@ -101,6 +107,37 @@ en revanche, une fois "identifier", le login return in id/token a utiliser dans 
 
 + Response 401 (application/json)
 
+        {
+            "code" : "Unauthorized",
+            "message" : "the gamer token is no longer available, call signin!", 
+            "data" : "optional error data", 
+        }
+
+### logout [DELETE]
+## logout a gamer
+
+### implementation
+* the gamertoken is removed from our cache (redis)
+* it has to be deleted on client-side!
+
+###### header description
+|Header Field|Description|Value|
+|---|---|---|
+|Authentication|string, require| Authentication : Basic **gamertoken**
+
+
++ Request (application/json)
+
+    + Headers
+    
+            Authentication : Basic gamertoken
+
++ Response 200 (application/json)
+
+        {
+            "done" : "ok"
+        }
+
 ## Gamer VFS  [/gamer/vfs]
 
 ### retieve gamer's data [GET]
@@ -108,7 +145,7 @@ en revanche, une fois "identifier", le login return in id/token a utiliser dans 
 ###### header description
 |Header Field|Description|Value|
 |---|---|---|
-|Authentication|string, require| Authentication : Basic token
+|Authentication|string, require| Authentication : Basic **gamertoken**
 
 ###### response description
 |Field|Description|Value|
@@ -120,7 +157,7 @@ en revanche, une fois "identifier", le login return in id/token a utiliser dans 
 
     + Headers
     
-            Authentication : Basic <authtoken>
+            Authentication : Basic gamertoken
 
 + Response 200 (application/json)
 
