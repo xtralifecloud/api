@@ -66,15 +66,7 @@ en revanche, une fois "identifier", le login return in id/token a utiliser dans 
             "data" : "optional error data", 
         }
 
-## Gamer  [/gamer/{gamerid}]
-
-### Implementation
-    Si le gamer est identifié par l'authentification, est-ce qu'on a vraiment besoin de respecifier le gamer dans l'url ?
-
-+ Parameters
-
-    + gamerid (string required) ... the gamer identifer
-
+## Gamer  [/gamer]
 
 ### Sign in [GET]
 ## login an existing gamer
@@ -109,14 +101,20 @@ en revanche, une fois "identifier", le login return in id/token a utiliser dans 
 
 + Response 401 (application/json)
 
-## Gamer VFS  [/gamer/{gamerid}/vfs]
-
-+ Parameters
-
-    + gamerid (string required) ... the gamer identifer
-
+## Gamer VFS  [/gamer/vfs]
 
 ### retieve gamer's data [GET]
+
+###### header description
+|Header Field|Description|Value|
+|---|---|---|
+|Authentication|string, require| Authentication : Basic token
+
+###### response description
+|Field|Description|Value|
+|---|---|---|
+|gamervfs|json| list of key/value associated to the gamer
+
 
 + Request (application/json)
 
