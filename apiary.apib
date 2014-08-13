@@ -70,8 +70,8 @@ this appends when at game first launch, after reinstalling game or after a logou
 + Response 200 (application/json)
 
         {
-            "gamerid" : "identifier of the user" 
-            "gamertoken" : "reusable token used by gamer related requests" 
+            "gamerid" : "identifier of the user" ,
+            "gamertoken" : "reusable token used by gamer related requests" ,
             "profile" : {},
             "vfs" : {},
             "gamervfs" : {},
@@ -83,7 +83,7 @@ this appends when at game first launch, after reinstalling game or after a logou
         {
             "code" : "Unauthorized",
             "message" : "optional short error message", 
-            "data" : "optional error data", 
+            "data" : "optional error data" 
         }
 
 ### login [GET]
@@ -118,7 +118,7 @@ this request as the same response a the login request except for the fields game
         {
             "code" : "Unauthorized",
             "message" : "the gamer token is no longer available, call signin!", 
-            "data" : "optional error data", 
+            "data" : "optional error data"
         }
 
 ### logout [DELETE]
@@ -178,7 +178,7 @@ this request as the same response a the login request except for the fields game
         {
             "code" : "Unauthorized",
             "message" : "the gamer token is no longer available, call signin!", 
-            "data" : "optional error data", 
+            "data" : "optional error data" 
         }        
         
 
