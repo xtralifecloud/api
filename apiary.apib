@@ -12,6 +12,8 @@ Once you've created an account, you can provision a Game in the FrontOffice appl
 
 We're using a classic APIKEY / APISECRET couple to authenticate all requests.
 
+
+
 # Gamers routes 
 
 In addition to the Authentication above, gamers are identified (at least as `anonymous`).
@@ -25,6 +27,40 @@ In addition to the Authentication above, gamers are identified (at least as `ano
     * _for a gamer route, `token` is the one returned by sign in/up methods which is an random-key in our cache (redis) pointing a json = { appid: xxx, userid: zzz, ... }, called **gamertoken**_
     
     _**this means we have 2 redis collections with gamertoken: logged users, revoke at logout, and "active" users in term of CCU, revoked by timeout or suspending app**_
+
+
+## Application setup [/v1/setup]
+
+Before anything, you should `POST`your credentials to `/v1/setup` to receive various metadata.
+
+### setup [POST]
+
++ Request (application/json)
+
+    + Body
+        
+            { 
+                "apikey": "testkey",
+                "apisecret" : "testsecret"
+            }
+
++ Response 200 (application/json)
+
+        {
+            "appid" : "Test Game" ,
+            "apptoken" : "dfg54g2dfg54sqdf32wfds54fqdf" ,
+            "profile" : {},
+            "vfs" : {},
+            "gamervfs" : {},
+            "matches" : []
+        }
+
++ Response 401 (application/json)
+
+        {
+            "code" : "Unauthorized",
+            "message" : "Invalid App Credentials"
+        }
 
 
 ## Gamer Session [/gamer/session]
