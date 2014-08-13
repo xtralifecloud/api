@@ -9,50 +9,45 @@ and try us with your next social game! We're multiplateform and offer a full API
 ## Authentication
 
 Once you've created an account, you can provision a Game in the FrontOffice application.
-
 We're using a classic APIKEY / APISECRET couple to authenticate all requests.
 
+Every request should have two headers set with your game credentials :
 
+|Header     |               |
+|---        |---            |
+|x-apikey   |Your API key   |
+|x-apisecret|Your API secret|
 
 # Gamers routes 
 
-In addition to the Authentication above, gamers are identified (at least as `anonymous`).
+In addition to the Authentication above, gamers are authenticated too.
 
-### implementation
-* utilisation de Authentication : Basic `token`
+In the Clan, every user starts as an anonymous user. He can then opt-in to authenticate with Facebook or Google+.
+He can then use FB to authenticate even on other devices or to other games.
 
-    _proposal :_
-    
-    * _for a non gamer route, `token` could be APISECRET:APIKEY, called **apptoken**_
-    * _for a gamer route, `token` is the one returned by sign in/up methods which is an random-key in our cache (redis) pointing a json = { appid: xxx, userid: zzz, ... }, called **gamertoken**_
-    
-    _**this means we have 2 redis collections with gamertoken: logged users, revoke at logout, and "active" users in term of CCU, revoked by timeout or suspending app**_
+There's no account creation... It's just an anonymous login (which creates an account that *should* be reused if possible), 
+then Facebook or Google+ identities are automatically linked to his account as needed.
 
+## Anonymous Login [/v1/login/anonymous]
 
-## Application setup [/v1/setup]
+Before playing, the gamer needs an identity... Anonymous login provides such an identity.
 
-Before anything, you should `POST`your credentials to `/v1/setup` to receive various metadata.
+The response contains a `gamer_id` and a `gamer_token`. Both are opaque values and will be used to authenticate the gamer (with HTTP Basic Authentication).
 
-### setup [POST]
+### Anonymous login [POST]
 
 + Request (application/json)
 
-    + Body
-        
-            { 
-                "apikey": "testkey",
-                "apisecret" : "testsecret"
-            }
+    + Headers
+        x-apikey: test_api_key
+        x-apisecret: test_api_secret
 
 + Response 200 (application/json)
 
         {
-            "appid" : "Test Game" ,
-            "apptoken" : "dfg54g2dfg54sqdf32wfds54fqdf" ,
-            "profile" : {},
-            "vfs" : {},
-            "gamervfs" : {},
-            "matches" : []
+            "gamer_id" : "qsfd32sdf654g321d" ,
+            "gamer_token" : "dfg54g2dfg54sqdf32wfds54fqdf" ,
+            "api_version" : "v1"
         }
 
 + Response 401 (application/json)
@@ -61,7 +56,6 @@ Before anything, you should `POST`your credentials to `/v1/setup` to receive var
             "code" : "Unauthorized",
             "message" : "Invalid App Credentials"
         }
-
 
 ## Gamer Session [/gamer/session]
 
