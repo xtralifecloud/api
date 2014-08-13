@@ -23,6 +23,8 @@ In addition to the Authentication above, gamers are identified (at least as `ano
     
     * _for a non gamer route, `token` could be APISECRET:APIKEY, called **apptoken**_
     * _for a gamer route, `token` is the one returned by sign in/up methods which is an random-key in our cache (redis) pointing a json = { appid: xxx, userid: zzz, ... }, called **gamertoken**_
+    
+    _**this means we have 2 redis collections with gamertoken: logged users, revoke at logout, and "active" users in term of CCU, revoked by timeout or suspending app**_
 
 
 ## Gamer Session [/gamer/session]
@@ -50,11 +52,12 @@ this appends when at game first launch, after reinstalling game or after a logou
 ###### response description
 |Field|Description|Value|
 |---|---|---|
+|gamerid|string| id related to the gamer for the current app, used by requests like postevent, addfriend, ... 
+|gamertoken|string| token used in basic authentication for gamer authenticate requests
 |profile|json| gamer's profile, including "name", "email", "nickname", ...
 |vfs|json| list of key/value associated to the app/game
 |gamervfs|json| list of key/value associated to the gamer
 |matches|json| array of match currently in open state of the gamer
-
 
 + Request (application/json)
 
@@ -69,6 +72,10 @@ this appends when at game first launch, after reinstalling game or after a logou
         {
             "gamerid" : "identifier of the user" 
             "gamertoken" : "reusable token used by gamer related requests" 
+            "profile" : json,
+            "vfs" : json,
+            "gamervfs" : json,
+            "matches" : json array
         }
 
 + Response 401 (application/json)
@@ -85,10 +92,11 @@ this append when the gamertoken was saved
 ###### header description
 |Header Field|Description|Value|
 |---|---|---|
-|Authentication|string, require| Authentication : Basic **apptoken**
+|Authentication|string, require| Authentication : Basic **gamertoken**
 
 ###### response description
-this request as the same response a the login request!
+this request as the same response a the login request except for the fields gamerid and gamertoken which are missing!
+
 
 + Request (application/json)
 
@@ -169,7 +177,7 @@ this request as the same response a the login request!
 
         {
             "code" : "Unauthorized",
-            "message" : "optional short error message", 
+            "message" : "the gamer token is no longer available, call signin!", 
             "data" : "optional error data", 
         }        
         
