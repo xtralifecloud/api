@@ -61,11 +61,17 @@ this appends when at game first launch, after reinstalling game or after a logou
 
 + Request (application/json)
 
-        { 
-            "network": "cotc|facebook|googleplus|anonymous",
-            "id" : "network dependant id",
-            "token" : "network dependant authentification"
-        }
+    + Headers
+    
+            Authentication : Basic apptoken
+
+    + Body
+        
+            { 
+                "network": "cotc|facebook|googleplus|anonymous",
+                "id" : "network dependant id",
+                "token" : "network dependant authentification"
+            }
 
 + Response 200 (application/json)
 
@@ -104,6 +110,11 @@ this request as the same response a the login request except for the fields game
     
             Authentication : Basic gamertoken
 
+    + Body
+    
+            { 
+            }
+        
 + Response 200 (application/json)
 
         {
