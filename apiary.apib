@@ -72,10 +72,10 @@ this appends when at game first launch, after reinstalling game or after a logou
         {
             "gamerid" : "identifier of the user" 
             "gamertoken" : "reusable token used by gamer related requests" 
-            "profile" : json,
-            "vfs" : json,
-            "gamervfs" : json,
-            "matches" : json array
+            "profile" : {},
+            "vfs" : {},
+            "gamervfs" : {},
+            "matches" : []
         }
 
 + Response 401 (application/json)
@@ -107,10 +107,10 @@ this request as the same response a the login request except for the fields game
 + Response 200 (application/json)
 
         {
-            "profile" : json,
-            "vfs" : json,
-            "gamervfs" : json,
-            "matches" : json array
+            "profile" : {},
+            "vfs" : {},
+            "gamervfs" : {},
+            "matches" : []
         }
 
 + Response 401 (application/json)
@@ -170,7 +170,7 @@ this request as the same response a the login request except for the fields game
 + Response 200 (application/json)
 
         {
-            "gamervfs" : json,
+            "gamervfs" : {}
         }
 
 + Response 401 (application/json)
