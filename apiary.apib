@@ -28,19 +28,22 @@ He can then use FB to authenticate even on other devices or to other games.
 There's no account creation... It's just an anonymous login (which creates an account that *should* be reused if possible), 
 then Facebook or Google+ identities are automatically linked to his account as needed.
 
-## Anonymous Login [/v1/login/anonymous]
+## Anonymous Login [/v1/gamer/login/anonymous]
 
 Before playing, the gamer needs an identity... Anonymous login provides such an identity.
 
 The response contains a `gamer_id` and a `gamer_token`. Both are opaque values and will be used to authenticate the gamer (with HTTP Basic Authentication).
+
+It is your responsibility to store the gamer_id and gamer_token to help the user log in later.
 
 ### Anonymous login [POST]
 
 + Request (application/json)
 
     + Headers
-        x-apikey: test_api_key
-        x-apisecret: test_api_secret
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
 
 + Response 200 (application/json)
 
@@ -56,6 +59,61 @@ The response contains a `gamer_id` and a `gamer_token`. Both are opaque values a
             "code" : "Unauthorized",
             "message" : "Invalid App Credentials"
         }
+
+## Login [/v1/gamer/login]
+
+The login route is used for :
+
+* returning anonymous gamers
+* gamers who want to change the account they use to play
+* gamers who want to associate another auth method with their current account
+
+The choice of the correct behavior is the responsibility of the server side: you don't have to worry about it!
+
+As a consequence, when calling login, you must provide credentials you already have **and** possibly other credentials too.
+
+HTTP Basic Authentication is used to authenticate all requests, including this one.
+
+* if you have saved a previous anonymous gamer, use these credentials
+
+
+Login for authenticated gamers will need two components: 
+
+* anonymous user credentials: use the `gamer_id` and `gamer_token` above, saved locally from last connection
+
+* Facebook identity: use the `ID` and the `oauth token` from Facebook
+
+* Google+ identity: use the `ID` and the `oauth token` from Google+
+
+* email and password: use the `user` and `password`
+
+It is necessary to specify both the Authorization header **and** the json document.
+
+### Login [POST]
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization: Basic `base 64 encoding of user:pass or id:token`
+
++ Response 200 (application/json)
+
+        {
+            "network" : "anonymous"
+            "gamer_id" : "qsfd32sdf654g321d" ,
+            "gamer_token" : "dfg54g2dfg54sqdf32wfds54fqdf"
+        }
+
++ Response 401 (application/json)
+
+        {
+            "code" : "Unauthorized",
+            "message" : "Invalid App Credentials"
+        }
+
 
 ## Gamer Session [/gamer/session]
 
