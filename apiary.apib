@@ -21,73 +21,43 @@ Every request should have two headers set with your game credentials :
 # Gamers routes 
 
 In addition to the Authentication above, gamers are authenticated too.
+Before playing, the gamer needs an identity... Login provides such an identity.
 
-In the Clan, every user starts as an anonymous user. He can then opt-in to authenticate with Facebook or Google+.
-He can then use FB to authenticate even on other devices or to other games.
-
-There's no account creation... It's just an anonymous login (which creates an account that *should* be reused if possible), 
-then Facebook or Google+ identities are automatically linked to his account as needed.
-
-## Anonymous Login [/v1/gamer/login/anonymous]
-
-Before playing, the gamer needs an identity... Anonymous login provides such an identity.
-
-The response contains a `gamer_id` and a `gamer_token`. Both are opaque values and will be used to authenticate the gamer (with HTTP Basic Authentication).
-
-It is your responsibility to store the gamer_id and gamer_token to help the user log in later.
-
-### Anonymous login [POST]
-
-+ Request (application/json)
-
-    + Headers
-    
-            x-apikey : test_api_key
-            x-apisecret : test_api_secret
-
-+ Response 200 (application/json)
-
-        {
-            "gamer_id" : "qsfd32sdf654g321d" ,
-            "gamer_token" : "dfg54g2dfg54sqdf32wfds54fqdf" ,
-            "api_version" : "v1"
-        }
-
-+ Response 401 (application/json)
-
-        {
-            "code" : "Unauthorized",
-            "message" : "Invalid App Credentials"
-        }
 
 ## Login [/v1/gamer/login]
 
-The login route is used for :
+The login route is used for authenticate a gamer
 
-* returning anonymous gamers
-* gamers who want to change the account they use to play
-* gamers who want to associate another auth method with their current account
+HTTP Basic Authentication is used to authenticate all other requests, using the token returned by the request.
 
-The choice of the correct behavior is the responsibility of the server side: you don't have to worry about it!
+The response contains  a `gamer_token`. Its an opaque value and will be used to authenticate the gamer (with HTTP Basic Authentication).
 
-As a consequence, when calling login, you must provide credentials you already have **and** possibly other credentials too.
+It is your responsibility to store the gamer_token to help the user log in later.
 
-HTTP Basic Authentication is used to authenticate all requests, including this one.
-
-* if you have saved a previous anonymous gamer, use these credentials
-
-
-Login for authenticated gamers will need two components: 
-
-* anonymous user credentials: use the `gamer_id` and `gamer_token` above, saved locally from last connection
+Login for authenticated gamers will one of theese components: 
 
 * Facebook identity: use the `ID` and the `oauth token` from Facebook
 
 * Google+ identity: use the `ID` and the `oauth token` from Google+
 
-* email and password: use the `user` and `password`
+###### body description
 
-It is necessary to specify both the Authorization header **and** the json document.
+|Field|Description|Value|
+|---|---|---|
+|network|string, required|can be one of ["email", "facebook", "googleplus"]
+|facebookid|string, required when {network=facebook}| the ID returned by facebook sdk
+|facebooktoken|string, required when {network=facebook}| the token returned by facebook sdk
+|googleplusid|string, required when {network=googleplus}| the ID returned by google sdk
+|googleplustoken|string, required when {network=googleplus}| the token returned by google sdk
+
+###### response description
+|Field|Description|Value|
+|---|---|---|
+|gamertoken|string| token used in basic authentication for gamer authenticate requests
+|profile|json| gamer's profile, including "name", "email", "nickname", ...
+|vfs|json| list of key/value associated to the app/game
+|gamervfs|json| list of key/value associated to the gamer
+|matches|json| array of match currently in open state of the gamer
 
 ### Login [POST]
 
@@ -97,14 +67,22 @@ It is necessary to specify both the Authorization header **and** the json docume
     
             x-apikey : test_api_key
             x-apisecret : test_api_secret
-            Authorization: Basic `base 64 encoding of user:pass or id:token`
+
+    + Body
+        
+            { 
+                "network": "facebook",
+                "facebookid" : "1000001010",
+                "facebooktoken" : "CAAIoRjU6xxYBAAy5Ymu...7XAehrcVQBUOG7oBVNatEUZD"
+            }
 
 + Response 200 (application/json)
 
         {
-            "network" : "anonymous"
-            "gamer_id" : "qsfd32sdf654g321d" ,
-            "gamer_token" : "dfg54g2dfg54sqdf32wfds54fqdf"
+            "gamer_token" : "dfg54g2dfg54sqdf32wfds54fqdf",
+            "profile" : {},
+            "vfs" : {},
+            "gamervfs" : {}
         }
 
 + Response 401 (application/json)
@@ -114,114 +92,11 @@ It is necessary to specify both the Authorization header **and** the json docume
             "message" : "Invalid App Credentials"
         }
 
-
-## Gamer Session [/gamer/session]
-
-### sign in [PUT]
-## register a new gamer, or reconnect after a lost of gamertoken
-this appends when at game first launch, after reinstalling game or after a logout
-
-|Header Field|Description|Value|
-|---|---|---|
-|Authentication|string, require| Authentication : Basic **apptoken**
-
-###### body description
-
-|Field|Description|Value|
-|---|---|---|
-|network|string, require|can be one of ["email", "facebook", "googleplus", "anonymous"]
-|facebooktoken|string, required when {network=facebook}| the token returned by facebook login
-|googleplustoken|string, required when {network=googleplus}| the token returned by google login
-|email|string, required when {network=email}| gamer well formed email
-|password|string, required when {network=email}| gamer registered password
-
-*no fields are needed in case of 'anonymous' network*
-
-###### response description
-|Field|Description|Value|
-|---|---|---|
-|gamerid|string| id related to the gamer for the current app, used by requests like postevent, addfriend, ... 
-|gamertoken|string| token used in basic authentication for gamer authenticate requests
-|profile|json| gamer's profile, including "name", "email", "nickname", ...
-|vfs|json| list of key/value associated to the app/game
-|gamervfs|json| list of key/value associated to the gamer
-|matches|json| array of match currently in open state of the gamer
-
-+ Request (application/json)
-
-    + Headers
-    
-            Authentication : Basic apptoken
-
-    + Body
-        
-            { 
-                "network": "cotc|facebook|googleplus|anonymous",
-                "id" : "network dependant id",
-                "token" : "network dependant authentification"
-            }
-
-+ Response 200 (application/json)
-
-        {
-            "gamerid" : "identifier of the user" ,
-            "gamertoken" : "reusable token used by gamer related requests" ,
-            "profile" : {},
-            "vfs" : {},
-            "gamervfs" : {},
-            "matches" : []
-        }
-
-+ Response 401 (application/json)
-
-        {
-            "code" : "Unauthorized",
-            "message" : "optional short error message", 
-            "data" : "optional error data" 
-        }
-
-### login [GET]
-## login an existing gamer with an already known gamertoken
-this append when the gamertoken was saved
-###### header description
-|Header Field|Description|Value|
-|---|---|---|
-|Authentication|string, require| Authentication : Basic **gamertoken**
-
-###### response description
-this request as the same response a the login request except for the fields gamerid and gamertoken which are missing!
-
-
-+ Request
-
-    + Headers
-    
-            Authentication : Basic gamertoken
-
-        
-+ Response 200 (application/json)
-
-        {
-            "profile" : {},
-            "vfs" : {},
-            "gamervfs" : {},
-            "matches" : []
-        }
-
-+ Response 401 (application/json)
-
-        {
-            "code" : "Unauthorized",
-            "message" : "the gamer token is no longer available, call signin!", 
-            "data" : "optional error data"
-        }
-
 ### logout [DELETE]
-## logout a gamer
+logout a gamer
 
 ### implementation
-* the gamertoken is removed from our cache (redis)
-* it has to be deleted on client-side!
+* the gamer token has to be deleted on client-side!
 
 ###### header description
 |Header Field|Description|Value|
@@ -238,7 +113,7 @@ this request as the same response a the login request except for the fields game
 + Response 200 
 
 
-## Gamer VFS  [/gamer/vfs]
+## Gamer VFS  [/gamer/vfs/{key}]
 
 ### retieve gamer's data [GET]
 
@@ -252,17 +127,19 @@ this request as the same response a the login request except for the fields game
 |---|---|---|
 |gamervfs|json| list of key/value associated to the gamer
 
++ Parameters
+    + key (required, string) ... the desired key
 
 + Request
 
     + Headers
     
             Authentication : Basic gamertoken
-
+            
 + Response 200 (application/json)
 
         {
-            "gamervfs" : {}
+            "gamervfs" : { "key" :"value" }
         }
 
 + Response 401 (application/json)
