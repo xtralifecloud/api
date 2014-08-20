@@ -24,7 +24,7 @@ In addition to the Authentication above, gamers are authenticated too.
 Before playing, the gamer needs an identity... Login provides such an identity.
 
 
-## Login [/v1/gamer/login]
+## How Login works [/v1/gamer/login]
 
 
 The login route is used to authenticate a gamer, and get basic profile information about him.
@@ -112,8 +112,9 @@ The response is a JSON object.
 
 Log a gamer out
 
-### implementation
-* the gamer token has to be deleted on client-side!
+    IMPL the gamer token has to be deleted on client-side!
+
+### Login [POST]
 
 + Request
 
@@ -218,7 +219,7 @@ Log a gamer out
         }        
  
     
-### Definitly remove gamer's data [DELETE]
+### Remove gamer's data [DELETE]
 
 ###### Possible values for error 404
 * `Key not found` ... the specified key doesn't exist
