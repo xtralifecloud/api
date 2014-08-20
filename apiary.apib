@@ -63,6 +63,8 @@ Both `gamer_id` and `gamer_secret` are returned by `/v1/gamer/login`.
 
 A JSON object must be sent in the request body with the following structure.
 
+    IMPL We should decide if ?parameters would be better for actions... I think so
+
 |Field|Description|Value|
 |---|---|---|
 |network|string, required|can be one of ["raw", "facebook", "googleplus"]
@@ -70,6 +72,8 @@ A JSON object must be sent in the request body with the following structure.
 |token|string, required| the user secret/token for this network
 
 ### Response description
+
+**Note:** If a new user was created, the response code is `201`, `200` otherwise.
 
 The response is a JSON object.
 
@@ -93,21 +97,20 @@ The response is a JSON object.
         
             { 
                 "network": "facebook",
-                "facebookid" : "1000001010",
-                "facebooktoken" : "CAAIoRjU6xxYBAAy5Ymu...7XAehrcVQBUOG7oBVNatEUZD"
+                "id" : "1000001010",
+                "token" : "CAAIoRjU6xxYBAAy5Ymu...7XAehrcVQBUOG7oBVNatEUZD"
             }
 
 + Response 200 (application/json)
 
         {
             "user_id" : "dfg54g2dfg54sqdf32wfds54fqdf",
-            "user_secret" : "dfg54g2dfg54sqdf32wfds54fqdf",
+            "user_secret" : "dsfg5dgfs654ezrt321ds31gdfs654ert",
             "profile" : {},
             "vfs" : {},
             "gamervfs" : {}
         }
-        
-
+    
 + Request (application/json)
 
     + Headers
@@ -119,8 +122,8 @@ The response is a JSON object.
         
             { 
                 "network": "facebook",
-                "facebookid" : "1000001010",
-                "facebooktoken" : "CAAIoRjU6xxYBAAy5Ymu...7XAehrcVQBUOG7oBVNatEUZD"
+                "id" : "1000001010",
+                "token" : "CAAIoRjU6xxYBAAy5Ymu...7XAehrcVQBUOG7oBVNatEUZD"
             }
 
 + Response 401 (application/json)
