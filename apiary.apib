@@ -8,7 +8,7 @@ and try us with your next social game! We're multiplateform and offer a full API
 
 ## Authentication
 
-Once you've created an account, you can provision a Game in the FrontOffice application.
+Once you've created an account, you can provision a Game in the FrontOffice application in either sandbox or production mode.
 We're using a classic APIKEY / APISECRET couple to authenticate all requests.
 
 Every request should have two headers set with your game credentials :
@@ -17,9 +17,6 @@ Every request should have two headers set with your game credentials :
 |---        |---            |
 |x-apikey   |Your API key   |
 |x-apisecret|Your API secret|
-|BasicAuthentication| the gamer token|
-
-**BasicAuthentication must be used for all the gamer authenticated routes**
 
 # Gamers routes 
 
@@ -31,32 +28,45 @@ Before playing, the gamer needs an identity... Login provides such an identity.
 
 The login route is used for authenticate a gamer
 
-HTTP Basic Authentication is used to authenticate all other requests, using the token returned by the request.
+HTTP Basic Authentication is used to authenticate every requests, using the token returned by the request.
 
-The response contains  a `gamer_token`. Its an opaque value and will be used to authenticate the gamer (with HTTP Basic Authentication).
+|Header     |               |
+|---        |---            |
+|x-apikey   |Your API key   |
+|x-apisecret|Your API secret|
+|BasicAuthentication| gamer_id:gamer_secret base64 encoded|
 
-It is your responsibility to store the gamer_token to help the user log in later.
+Both `gamer_id` and `gamer_secret` are returned by `/v1/gamer/login`.
 
-Login for authenticated gamers will one of theese components: 
+It is your responsibility to store these to help the user log in later.
+
+Login for authenticated gamers will one of these : 
 
 * Facebook identity: use the `ID` and the `oauth token` from Facebook
 
 * Google+ identity: use the `ID` and the `oauth token` from Google+
 
+* RAW: use the `gamer_id` and the `gamer_secret` from a previous login
+
+    Note: I've added RAW as a mean to login again, with gamer_id:secret
+
 ###### body description
 
 |Field|Description|Value|
 |---|---|---|
-|network|string, required|can be one of ["email", "facebook", "googleplus"]
+|network|string, required|can be one of ["raw", "facebook", "googleplus"]
 |facebookid|string, required when {network=facebook}| the ID returned by facebook sdk
 |facebooktoken|string, required when {network=facebook}| the token returned by facebook sdk
 |googleplusid|string, required when {network=googleplus}| the ID returned by google sdk
 |googleplustoken|string, required when {network=googleplus}| the token returned by google sdk
 
+    Note: maybe we should use `network, id, token` instead, to remove any ambiguity that login is using a single network...
+
 ###### response description
 |Field|Description|Value|
 |---|---|---|
-|gamertoken|string| token used in basic authentication for gamer authenticate requests
+|gamer_id|string| user_id used in basic authentication for gamer authenticated requests
+|gamer_secret|string| secret used in basic authentication for gamer authenticated requests
 |profile|json| gamer's profile, including "name", "email", "nickname", ...
 |vfs|json| list of key/value associated to the app/game
 |gamervfs|json| list of key/value associated to the gamer
@@ -107,7 +117,7 @@ Logout a gamer
     
             x-apikey : test_api_key
             x-apisecret : test_api_secret
-            Authentication : Basic gamertoken
+            Authorization : gamer_id:gamer_secret
 
 + Response 200 
 
@@ -116,9 +126,11 @@ Logout a gamer
 
 ### Get gamer's data [GET]
 
-###### Possible values for error 400
+###### Possible values for error 404
 * `Key not found` ... the specified key doesn't exist
 * `Domain not found` ... the specified domain doesn't exist
+
+    Note: it should be 404 (resource not found), not 400 (bad request)
 
 ###### response description
 |Field|Description|Value|
@@ -135,7 +147,7 @@ Logout a gamer
     
             x-apikey : test_api_key
             x-apisecret : test_api_secret
-            Authentication : Basic gamertoken
+            Authorization : Basic gamertoken
             
 + Response 200 (application/json)
 
@@ -151,7 +163,7 @@ Logout a gamer
             "data" : "optional error data" 
         }        
 
-+ Response 400 (application/json)
++ Response 404 (application/json)
 
         {
             "code" : "Key not found",
@@ -173,7 +185,7 @@ Logout a gamer
     
             x-apikey : test_api_key
             x-apisecret : test_api_secret
-            Authentication : Basic gamertoken
+            Authorization : Basic gamertoken
             
     + Body
     
@@ -193,7 +205,7 @@ Logout a gamer
     
 ### Definitly remove gamer's data [DELETE]
 
-###### Possible values for error 400
+###### Possible values for error 404
 * `Key not found` ... the specified key doesn't exist
 * `Domain not found` ... the specified domain doesn't exist
 
@@ -207,7 +219,7 @@ Logout a gamer
     
             x-apikey : test_api_key
             x-apisecret : test_api_secret
-            Authentication : Basic gamertoken
+            Authorization : Basic gamertoken
             
 + Response 200
 
@@ -219,7 +231,7 @@ Logout a gamer
             "data" : "optional error data" 
         }  
         
-+ Response 400 (application/json)
++ Response 404 (application/json)
 
         {
             "code" : "Key not found",
