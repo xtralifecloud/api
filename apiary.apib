@@ -6,7 +6,7 @@ HOST: https://sandbox-api01.clanofthecloud.com
 [ClanOfTheCloud](http://www.clanofthecloud.com) is a Mobile Gaming Backend as a Service (Baas) Company. You can create an account on our website, 
 and try us with your next social game! We're scalable, multiplateform and we offer a full API.
 
-## Authentication
+## Token-based App Authentication
 
 Once you've created an account, you can provision a Game in the FrontOffice application in either sandbox or production mode.
 We're using a classic APIKEY / APISECRET couple to authenticate all requests.
@@ -24,7 +24,7 @@ In addition to the Authentication above, gamers are authenticated too.
 Before playing, the gamer needs an identity... Login provides such an identity.
 
 
-## How Login works [/v1/gamer/login]
+## Gamer login [/v1/gamer/login]
 
 The login route is used to authenticate a gamer, and get basic profile information about him.
 
@@ -50,7 +50,7 @@ The 3 authentication headers will look like :
 |---        |---            |
 |x-apikey   |Your API key   |
 |x-apisecret|Your API secret|
-|Authorization| Basic `gamer_id:gamer_secret` base64 encoded|
+|Authorization| Basic `gamer_id:gamer_secret` *(base64 encoded)*|
 
 Both `gamer_id` and `gamer_secret` are returned by `/v1/gamer/login`.
 
@@ -133,7 +133,7 @@ The response is a JSON object.
             "message" : "Invalid App Credentials"
         }
 
-## Logout [/v1/gamer/logout]
+## Gamer logout [/v1/gamer/logout]
 
 Log a gamer out
 
@@ -182,6 +182,21 @@ Log a gamer out
         }
 
 ## Gamer VFS  [/v1/gamer/vfs/{domain}/{key}]
+
+Gamer VFS is a key-value store you can use to associate data with a user. 
+
+Use it to store state, preferences... any data your user would like to share among devices.
+
+### Domains
+
+Because you might want to share Gamer VFS data between games you (or other companies) wrote,
+you can define so called "domains" which protect your data and let use share it securely.
+
+A Domain is a namespace, but you must know the Domain-Key for this domain to have access to it. So to share
+data stored in a domain, you just have to share the Domain-Key.
+
+Your game has its own private Domain (see in FrontOffice dashboard) which you probably don't want to share
+but you can create other domains to share data between apps, or even between app-developers.
 
 ### Get gamer's data [GET]
 
