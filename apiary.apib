@@ -17,6 +17,9 @@ Every request should have two headers set with your game credentials :
 |---        |---            |
 |x-apikey   |Your API key   |
 |x-apisecret|Your API secret|
+|BasicAuthentication| the gamer token|
+
+**BasicAuthentication must be used for all the gamer authenticated routes**
 
 # Gamers routes 
 
@@ -92,35 +95,26 @@ Login for authenticated gamers will one of theese components:
             "message" : "Invalid App Credentials"
         }
 
-### logout [DELETE]
+### Logout [DELETE]
 Logout a gamer
 
 ### implementation
 * the gamer token has to be deleted on client-side!
 
-###### header description
-|Header Field|Description|Value|
-|---|---|---|
-|Authentication|string, require| Authentication : Basic **gamertoken**
-
-
 + Request
 
     + Headers
     
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
             Authentication : Basic gamertoken
 
 + Response 200 
 
 
-## Gamer VFS  [/gamer/vfs/{key}]
+## Gamer VFS  [/gamer/vfs/{domain}/{key}]
 
-### retieve gamer's data [GET]
-
-###### header description
-|Header Field|Description|Value|
-|---|---|---|
-|Authentication|string, require| Authentication : Basic **gamertoken**
+### Get gamer's data [GET]
 
 ###### response description
 |Field|Description|Value|
@@ -128,12 +122,15 @@ Logout a gamer
 |gamervfs|json| list of key/value associated to the gamer
 
 + Parameters
-    + key (required, string) ... the desired key
+    + domain (required, string) ... the domain where to store the key/value
+    + key (optional, string) ... the desired key, if omited all keys of the domains will be returned
 
 + Request
 
     + Headers
     
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
             Authentication : Basic gamertoken
             
 + Response 200 (application/json)
@@ -150,21 +147,18 @@ Logout a gamer
             "data" : "optional error data" 
         }        
         
-### set gamer's data [PUT]
-
-###### header description
-|Header Field|Description|Value|
-|---|---|---|
-|Authentication|string, require| Authentication : Basic **gamertoken**
-
+### Set gamer's data [PUT]
 
 + Parameters
+    + domain (required, string) ... the domain from where to get the key/value
     + key (required, string) ... the desired key
 
 + Request (application/json)
 
     + Headers
     
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
             Authentication : Basic gamertoken
             
     + Body
