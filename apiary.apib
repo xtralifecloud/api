@@ -116,13 +116,17 @@ Logout a gamer
 
 ### Get gamer's data [GET]
 
+###### Possible values for error 400
+* "Key not found" ... the specified key doesn't exist
+* "Domain not found" ... the specified domain doesn't exist
+
 ###### response description
 |Field|Description|Value|
 |---|---|---|
 |gamervfs|json| list of key/value associated to the gamer
 
 + Parameters
-    + domain (required, string) ... the domain where to store the key/value
+    + domain (required, string) ... the domain where to retreive the key/value
     + key (optional, string) ... the desired key, if omited all keys of the domains will be returned
 
 + Request
@@ -146,11 +150,21 @@ Logout a gamer
             "message" : "the gamer token is no longer available, call signin!", 
             "data" : "optional error data" 
         }        
-        
+
++ Response 400 (application/json)
+
+        {
+            "code" : "Key not found",
+            "message" : "the specified key is not found"
+            "data" : "optional error data" 
+        }  
+
 ### Set gamer's data [PUT]
 
+**if domain and/or key don't exist, they are created**
+
 + Parameters
-    + domain (required, string) ... the domain from where to get the key/value
+    + domain (required, string) ... the domain where to store the key/value
     + key (required, string) ... the desired key
 
 + Request (application/json)
@@ -175,4 +189,40 @@ Logout a gamer
             "message" : "the gamer token is no longer available, call signin!", 
             "data" : "optional error data" 
         }        
+ 
     
+### Definitly remove gamer's data [DELETE]
+
+###### Possible values for error 400
+* "Key not found" ... the specified key doesn't exist
+* "Domain not found" ... the specified domain doesn't exist
+
++ Parameters
+    + domain (required, string) ... the domain from where to get the key/value
+    + key (required, string) ... the key to be removed
+
++ Request
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authentication : Basic gamertoken
+            
++ Response 200
+
++ Response 401 (application/json)
+
+        {
+            "code" : "Unauthorized",
+            "message" : "the gamer token is no longer available, call signin!", 
+            "data" : "optional error data" 
+        }  
+        
++ Response 400 (application/json)
+
+        {
+            "code" : "Key not found",
+            "message" : "the specified key is not found"
+            "data" : "optional error data" 
+        }  
