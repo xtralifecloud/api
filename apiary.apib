@@ -26,33 +26,38 @@ Before playing, the gamer needs an identity... Login provides such an identity.
 
 ## How Login works [/v1/gamer/login]
 
-
 The login route is used to authenticate a gamer, and get basic profile information about him.
 
-Login for authenticated gamers will one of these : 
+**Note:** If an existing gamer can't be found, a new one is created and returned.
 
-* Facebook identity: use the `ID` and the `oauth token` from Facebook
+Login for authenticated gamers will use one of these authentication methods : 
 
-* Google+ identity: use the `ID` and the `oauth token` from Google+
+* Facebook Connect: use the `ID` and the `oauth token` from Facebook
+
+* Google+ Sign-in: use the `ID` and the `oauth token` from Google+
 
 * RAW: use the `gamer_id` and the `gamer_secret` from a previous login
 
-    Note: I've added RAW as a mean to login again, with gamer_id:secret
 
-After login has been called, HTTP Basic Authentication will be used to authenticate every requests.
+
+### After login
+
+After login has been called, HTTP Basic Authentication will be used to authenticate every request.
 
 |Header     |               |
 |---        |---            |
 |x-apikey   |Your API key   |
 |x-apisecret|Your API secret|
-|Authorization| BASIC gamer_id:gamer_secret base64 encoded|
+|Authorization| Basic `gamer_id:gamer_secret` base64 encoded|
 
 Both `gamer_id` and `gamer_secret` are returned by `/v1/gamer/login`.
 
-It is your responsibility to store these to help the user log in later.
+It is your responsibility to store these to help the user log in later (in RAW mode).
 
 
-###### body description
+### Login [POST]
+
+### Body description
 
 A JSON object must be sent in the request body with the following structure.
 
@@ -62,7 +67,7 @@ A JSON object must be sent in the request body with the following structure.
 |id|string, required | the user ID for this network
 |token|string, required| the user secret/token for this network
 
-###### response description
+### Response description
 
 The response is a JSON object.
 
@@ -74,8 +79,6 @@ The response is a JSON object.
 |vfs|json| list of key/value associated to the app/game
 |gamervfs|json| list of key/value associated to the gamer
 |matches|json| array of match currently in open state of the gamer
-
-### Login [POST]
 
 + Request (application/json)
 
@@ -101,6 +104,22 @@ The response is a JSON object.
             "vfs" : {},
             "gamervfs" : {}
         }
+        
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : INVALID KEY
+            x-apisecret : INVALID SECRET
+
+    + Body
+        
+            { 
+                "network": "facebook",
+                "facebookid" : "1000001010",
+                "facebooktoken" : "CAAIoRjU6xxYBAAy5Ymu...7XAehrcVQBUOG7oBVNatEUZD"
+            }
 
 + Response 401 (application/json)
 
@@ -123,9 +142,17 @@ Log a gamer out
     
             x-apikey : test_api_key
             x-apisecret : test_api_secret
-            Authorization : gamer_id:gamer_secret
+            Authorization : Basic gamer_id:gamer_secret
 
 + Response 200 
+
++ Request
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization : Basic INVALID GAMER IDENTITY
 
 + Response 401
 
@@ -134,6 +161,14 @@ Log a gamer out
             "message" : "Invalid Gamer Credentials"
         }
         
++ Request
+
+    + Headers
+    
+            x-apikey : INVALID API KEY
+            x-apisecret : INVALID API SECRET
+            Authorization : Basic gamer_id:gamer_secret
+
 + Response 401 (application/json)
 
         {
@@ -164,7 +199,7 @@ Log a gamer out
     
             x-apikey : test_api_key
             x-apisecret : test_api_secret
-            Authorization : Basic gamertoken
+            Authorization : Basic gamer_id:gamer_secret
             
 + Response 200 (application/json)
 
@@ -202,7 +237,7 @@ Log a gamer out
     
             x-apikey : test_api_key
             x-apisecret : test_api_secret
-            Authorization : Basic gamertoken
+            Authorization : Basic gamer_id:gamer_secret
             
     + Body
     
@@ -236,7 +271,7 @@ Log a gamer out
     
             x-apikey : test_api_key
             x-apisecret : test_api_secret
-            Authorization : Basic gamertoken
+            Authorization : Basic gamer_id:gamer_secret
             
 + Response 200
 
