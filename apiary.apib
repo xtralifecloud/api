@@ -93,7 +93,7 @@ Login for authenticated gamers will one of theese components:
         }
 
 ### logout [DELETE]
-logout a gamer
+Logout a gamer
 
 ### implementation
 * the gamer token has to be deleted on client-side!
@@ -150,4 +150,35 @@ logout a gamer
             "data" : "optional error data" 
         }        
         
+### set gamer's data [PUT]
 
+###### header description
+|Header Field|Description|Value|
+|---|---|---|
+|Authentication|string, require| Authentication : Basic **gamertoken**
+
+
++ Parameters
+    + key (required, string) ... the desired key
+
++ Request (application/json)
+
+    + Headers
+    
+            Authentication : Basic gamertoken
+            
+    + Body
+    
+            { "value" : "data which could be a json" }
+            
++ Response 200
+
+
++ Response 401 (application/json)
+
+        {
+            "code" : "Unauthorized",
+            "message" : "the gamer token is no longer available, call signin!", 
+            "data" : "optional error data" 
+        }        
+    
