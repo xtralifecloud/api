@@ -13,7 +13,7 @@ We're using a classic APIKEY / APISECRET couple to authenticate all requests.
 
 Every request should have two headers set with your game credentials :
 
-|Header     |               |
+|Header     | Value         |
 |---        |---            |
 |x-apikey   |Your API key   |
 |x-apisecret|Your API secret|
@@ -44,7 +44,9 @@ Login for authenticated gamers will use one of these authentication methods :
 
 After login has been called, HTTP Basic Authentication will be used to authenticate every request.
 
-|Header     |               |
+The 3 authentication headers will look like :
+
+|Header     | Value         |
 |---        |---            |
 |x-apikey   |Your API key   |
 |x-apisecret|Your API secret|
@@ -52,7 +54,7 @@ After login has been called, HTTP Basic Authentication will be used to authentic
 
 Both `gamer_id` and `gamer_secret` are returned by `/v1/gamer/login`.
 
-It is your responsibility to store these to help the user log in later (in RAW mode).
+**Note:** It is your responsibility to store these to help the user log in later (in RAW mode).
 
 
 ### Login [POST]
