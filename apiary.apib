@@ -26,19 +26,8 @@ Before playing, the gamer needs an identity... Login provides such an identity.
 
 ## Login [/v1/gamer/login]
 
-The login route is used for authenticate a gamer
 
-HTTP Basic Authentication is used to authenticate every requests, using the token returned by the request.
-
-|Header     |               |
-|---        |---            |
-|x-apikey   |Your API key   |
-|x-apisecret|Your API secret|
-|Authorization| BASIC gamer_id:gamer_secret base64 encoded|
-
-Both `gamer_id` and `gamer_secret` are returned by `/v1/gamer/login`.
-
-It is your responsibility to store these to help the user log in later.
+The login route is used to authenticate a gamer, and get basic profile information about him.
 
 Login for authenticated gamers will one of these : 
 
@@ -50,19 +39,33 @@ Login for authenticated gamers will one of these :
 
     Note: I've added RAW as a mean to login again, with gamer_id:secret
 
+After login has been called, HTTP Basic Authentication will be used to authenticate every requests.
+
+|Header     |               |
+|---        |---            |
+|x-apikey   |Your API key   |
+|x-apisecret|Your API secret|
+|Authorization| BASIC gamer_id:gamer_secret base64 encoded|
+
+Both `gamer_id` and `gamer_secret` are returned by `/v1/gamer/login`.
+
+It is your responsibility to store these to help the user log in later.
+
+
 ###### body description
+
+A JSON object must be sent in the request body with the following structure.
 
 |Field|Description|Value|
 |---|---|---|
 |network|string, required|can be one of ["raw", "facebook", "googleplus"]
-|facebookid|string, required when {network=facebook}| the ID returned by facebook sdk
-|facebooktoken|string, required when {network=facebook}| the token returned by facebook sdk
-|googleplusid|string, required when {network=googleplus}| the ID returned by google sdk
-|googleplustoken|string, required when {network=googleplus}| the token returned by google sdk
-
-    Note: maybe we should use `network, id, token` instead, to remove any ambiguity that login is using a single network...
+|id|string, required | the user ID for this network
+|token|string, required| the user secret/token for this network
 
 ###### response description
+
+The response is a JSON object.
+
 |Field|Description|Value|
 |---|---|---|
 |gamer_id|string| user_id used in basic authentication for gamer authenticated requests
@@ -105,8 +108,9 @@ Login for authenticated gamers will one of these :
             "message" : "Invalid App Credentials"
         }
 
-### Logout [DELETE]
-Logout a gamer
+## Logout [/v1/gamer/logout]
+
+Log a gamer out
 
 ### implementation
 * the gamer token has to be deleted on client-side!
@@ -121,16 +125,27 @@ Logout a gamer
 
 + Response 200 
 
++ Response 401
 
-## Gamer VFS  [/gamer/vfs/{domain}/{key}]
+        {
+            "code" : "Unauthorized",
+            "message" : "Invalid Gamer Credentials"
+        }
+        
++ Response 401 (application/json)
+
+        {
+            "code" : "Unauthorized",
+            "message" : "Invalid App Credentials"
+        }
+
+## Gamer VFS  [/v1/gamer/vfs/{domain}/{key}]
 
 ### Get gamer's data [GET]
 
 ###### Possible values for error 404
 * `Key not found` ... the specified key doesn't exist
 * `Domain not found` ... the specified domain doesn't exist
-
-    Note: it should be 404 (resource not found), not 400 (bad request)
 
 ###### response description
 |Field|Description|Value|
@@ -159,7 +174,7 @@ Logout a gamer
 
         {
             "code" : "Unauthorized",
-            "message" : "the gamer token is no longer available, call signin!", 
+            "message" : "the gamer token is no longer available, call login again!", 
             "data" : "optional error data" 
         }        
 
