@@ -222,6 +222,11 @@ data stored in a domain, you just have to share the Domain-Key.
 Your game has its own private Domain (see in FrontOffice dashboard) which you probably don't want to share
 but you can create other domains to share data between apps, or even between app-developers.
 
+    I think we could use a magic `private` domain, replaced on the server with the apisecret (or a derived id).
+    It will provide secure game-private data.
+    Similarly, we could offer a magic `public`domain, not replaced on the server... but I'm against it, as it
+    gives the impression we don't take security seriously enough
+
 ### Get gamer's data [GET]
 
 ###### Possible values for error 404
