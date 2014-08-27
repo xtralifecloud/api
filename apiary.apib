@@ -140,8 +140,6 @@ The response is a JSON object.
 
 Log a gamer out
 
-    IMPL the gamer token has to be deleted on client-side!
-
 ### Logout [POST]
 
 + Request
@@ -226,6 +224,9 @@ but you can create other domains to share data between apps, or even between app
     It will provide secure game-private data.
     Similarly, we could offer a magic `public`domain, not replaced on the server... but I'm against it, as it
     gives the impression we don't take security seriously enough
+
+    Anyway, I think we'll need, in the Game collection: the domains created by the dev, and the domains 'imported' by the dev
+    This will provide an additional level of security, and we'll have a list of valid domains to add stuff later
 
 ### Get gamer's data [GET]
 
