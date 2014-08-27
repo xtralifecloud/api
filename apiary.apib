@@ -181,6 +181,27 @@ Log a gamer out
             "message" : "Invalid App Credentials"
         }
 
+## Unlink authentication network [/v1/gamer/unlink]
+
+Used to unlink a user account from Facebook or Google+ credentials.
+
+### Unlink [POST]
+
++ Request
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization : Basic gamer_id:gamer_secret
+    + Body
+        
+            { 
+                "network": "facebook"
+            }
+
++ Response 200 (application/json)
+
 ## Gamer VFS  [/v1/gamer/vfs/{domain}/{key}]
 
 Gamer VFS is a key-value store you can use to associate data with a user. 
