@@ -343,16 +343,103 @@ but you can create other domains to share data between apps, or even between app
 
 ## Transactions [/v1/gamer/tx]
 
-### List transactions [GET]
-+ Response 200
+Transactions are used to keep track of any inventory or portfolio or wallet... It's basic functionality
+can be used in various contexts.
+
+In the case of an inventory, transactions will add or remove units from it. 
+When used as a portfolio (for virtual currency), transactions add or remove units too.
+And feel free to invent new uses!
 
 ### Create transaction [POST]
-+ Response 200
+A transaction is a Hash where the key is the unit, and the value is a positive (credit) or negative (debit) amount.
+So a single transaction can both credit and debit different units.
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization: Basic gamer_id:gamer_secret
+
+    + Body
+        
+            {
+                transaction: { 
+                    "Gold": +100,
+                    "Silver" : -2.5,
+                    "Arrows" : 20
+                },
+                description: "This is an example transaction"
+            }
+
++ Response 200 (application/json)
+
+        { 
+            "Gold": 130,
+            "Silver" : 0,
+            "Arrows" : 20
+        }
+        
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization: Basic gamer_id:gamer_secret
+
+    + Body
+        
+            {
+                "transaction": { "Gold": -1000000},
+                "description": "Excessive transaction"
+            }
+
 + Response 549
+
+### List transactions [GET]
+
+Use this API to list the transactions that took place for this gamer. You can specify an optional
+`?unit=xxx` parameter where `xxx` is the unit (Silver, Gold or Arrows in our example). If
+`unit` is specified, the result will only contain transactions about this unit.
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        [
+            { "ts": '2014-08-27T16:44:17.796Z', "tx": { Gold: 100 }, "desc": 'jsclient test' },
+            { "ts": '2014-08-27T16:02:22.645Z', "tx": { Gold: -100, Silver: 1 }, "desc": 'jsclient test' },
+            { "ts": '2014-08-27T16:02:22.371Z', "tx": { Gold: 100 }, "desc": 'jsclient test' }
+        ]
 
 ## Balance [/v1/gamer/tx/balance]
 
-### Get the gamer's balance [GET]
-+ Response 200
+Use this API to get the current balance. It will return a Hash of each unit and the amount held by the gamer.
+The balance is also returned each time you create a new transaction
 
+### Get the gamer's balance [GET]
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        { 
+            "Gold": 130,
+            "Silver" : 1.5,
+            "Arrows" : 20
+        }
 
