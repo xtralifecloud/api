@@ -245,6 +245,74 @@ Used to unlink a user account from Facebook or Google+ credentials.
 
 + Response 200 (application/json)
 
+## Profile [/v1/gamer/profile]
+
+Profile are data related to the user (globally)
+
+### Set Profile [POST]
+
+Fields can be added one be one, data are merged.
+The following fields can be set :
+    ["displayName", "lang", "firstName", "lastName", "addr1", "addr2", "addr3", "avatar"]
+
+**note** : avatar must be an URL, lang is ISO-639-1 code
+
+i.e when executing POST /v1/gamer/profile {"displayName": "Wonder Mike"}
+if the current profile is 
+    "profile" : {
+        "email" : "michael@cotc.com"
+    }
+then the result will be
+    "profile" : {
+        "displayName": "Wonder Mike",
+        "email" : "michael@cotc.com"
+    }
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization: Basic gamer_id:gamer_secret
+
+    + Body
+        
+            {
+                "displayName": "Wonder Mike",
+            }
+
++ Response 200 (application/json)
+
+        { 
+            "profile" : {
+                "displayName": "Wonder Mike",
+                "email" : "michael@cotc.com"
+            },
+            "updated" : true
+        }
+
+
+### Get properties [GET]
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        { 
+            "properties" : {
+                "Board": "river",
+                "Level" : 20
+                "Expert" : false
+            }
+        }
+
 ## Gamer VFS  [/v1/gamer/vfs/{domain}/{key}]
 
 Gamer VFS is a key-value store you can use to associate data with a user. 
@@ -483,5 +551,62 @@ The balance is also returned each time you create a new transaction
             "Gold": 130,
             "Silver" : 1.5,
             "Arrows" : 20
+        }
+
+## Properties [/v1/gamer/properties]
+
+Properties are used to allow match making...
+They are related to a game.
+
+### Set properties [POST]
+
+Properties are basic type (number, stringn boolean) json
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization: Basic gamer_id:gamer_secret
+
+    + Body
+        
+            {
+                "Board": "river",
+                "Level" : 20
+                "Expert" : false
+            }
+
++ Response 200 (application/json)
+
+        { 
+            "properties" : {
+                "Board": "river",
+                "Level" : 20
+                "Expert" : false
+            },
+            "updated" : true
+        }
+
+
+### Get properties [GET]
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        { 
+            "properties" : {
+                "Board": "river",
+                "Level" : 20
+                "Expert" : false
+            }
         }
 
