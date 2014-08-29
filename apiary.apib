@@ -26,7 +26,6 @@ Every request should have two headers set with your game credentials :
 In addition to the Authentication above, gamers are authenticated too.
 Before playing, the gamer needs an identity... Login provides such an identity.
 
-
 ## Gamer login [/v1/gamer/login]
 
 The login route is used to authenticate a gamer, and get basic profile information about him.
@@ -135,6 +134,49 @@ The response is a JSON object.
             "code" : "Unauthorized",
             "message" : "Invalid App Credentials"
         }
+
+
+## Gamer anonymous login [/v1/gamer/login/anonymous]
+The login/anonymous route is used to create a new gamer without any informations.
+
+### Login [POST]
+
+### Response description
+
+**Note:** same response as for login route.
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+
++ Response 200 (application/json)
+
+        {
+            "gamer_id" : "dfg54g2dfg54sqdf32wfds54fqdf",
+            "gamer_secret" : "dsfg5dgfs654ezrt321ds31gdfs654ert",
+            "profile" : {},
+            "vfs" : {},
+            "gamervfs" : {}
+        }
+    
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : INVALID KEY
+            x-apisecret : INVALID SECRET
+
++ Response 401 (application/json)
+
+        {
+            "code" : "Unauthorized",
+            "message" : "Invalid App Credentials"
+        }
+
+
 
 ## Gamer logout [/v1/gamer/logout]
 
