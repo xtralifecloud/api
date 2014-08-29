@@ -330,11 +330,6 @@ data stored in a domain, you just have to share the Domain-Key.
 Your game has its own private Domain (see in FrontOffice dashboard) which you probably don't want to share
 but you can create other domains to share data between apps, or even between app-developers.
 
-    I think we could use a magic `private` domain, replaced on the server with the apisecret (or a derived id).
-    It will provide secure game-private data.
-    Similarly, we could offer a magic `public`domain, not replaced on the server... but I'm against it, as it
-    gives the impression we don't take security seriously enough
-
     Anyway, I think we'll need, in the Game collection: the domains created by the dev, and the domains 'imported' by the dev
     This will provide an additional level of security, and we'll have a list of valid domains to add stuff later
 
@@ -364,7 +359,24 @@ but you can create other domains to share data between apps, or even between app
 + Response 200 (application/json)
 
         {
-            "gamervfs" : { "key" :"data which could be a json" }
+            "key" : "data which could be a json"
+        }
+
++ Request
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization : Basic gamer_id:gamer_secret
+            
++ Response 200 (application/json)
+
+        {
+            "key1" : "any json value, object, array for key1",
+            "key2" : "any json value, object, array for key2",
+            "key3" : "any json value, object, array for key3",
+            "key4" : "any json value, object, array for key4"
         }
 
 + Response 401 (application/json)
@@ -385,6 +397,8 @@ but you can create other domains to share data between apps, or even between app
 
 ### Set gamer's data [PUT]
 
+You can store data easily. Simply send the data to be stored, as a JSON object, in the body of the request. Note that simple strings are not allowed. Arrays and objects are.
+
 **if domain and/or key don't exist, they are created**
 
 + Parameters
@@ -401,10 +415,13 @@ but you can create other domains to share data between apps, or even between app
             
     + Body
     
-            { "value" : "data which could be a json" }
+            {"whatever": "your JSON value"}
             
 + Response 200
 
+    + Body
+    
+            1
 
 + Response 401 (application/json)
 
@@ -417,13 +434,15 @@ but you can create other domains to share data between apps, or even between app
     
 ### Remove gamer's data [DELETE]
 
-###### Possible values for error 404
+    NOTE : we can't yet distinguish a missing key from an incorrect domain...
+
+###### Possible reasons for error 404
 * `Key not found` ... the specified key doesn't exist
 * `Domain not found` ... the specified domain doesn't exist
 
 + Parameters
     + domain (required, string) ... the domain from where to get the key/value
-    + key (required, string) ... the key to be removed
+    + key (optional, string) ... the key to be removed (all if not specified)
 
 + Request
 
@@ -434,6 +453,11 @@ but you can create other domains to share data between apps, or even between app
             Authorization : Basic gamer_id:gamer_secret
             
 + Response 200
+
+    + Body
+    
+            1
+
 
 + Response 401 (application/json)
 
