@@ -332,7 +332,8 @@ but you can create other domains to share data between apps, or even between app
 
     Anyway, I think we'll need, in the Game collection: the domains created by the dev, and the domains 'imported' by the dev
     This will provide an additional level of security, and we'll have a list of valid domains to add stuff later
-
+    we could have in consul KV the following data { domains :{ private : "xqxsq", owned : ['qqss', 'qssqsd'], imported : ['qsqdd'] } theese will be added to mogodb games collection during the "configureGame" phase
+ 
 ### Get gamer's data [GET]
 
 ###### Possible values for error 404
@@ -634,3 +635,75 @@ Properties are basic type (number, stringn boolean) json
             }
         }
 
+## Friends [/v1/gamer/friends/{?status}]
+
+### Get list of friends [GET]
+
++ Parameters
+    + status (optional, string) ... "blacklist" to retrieve the blacklisted gamer's
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        { 
+            "<gamer_id_1>" : { displayName : "gamer1", lang : "en" },
+            "<gamer_id_2>" : { displayName : "gamer2", lang : "fr" }
+        }
+        
+## Friend status [/v1/gamer/friends/{friendid}{?status}]
+
+### Set a releationship [POST]
+
++ Parameters
+    + friendid (required, string) ... a gamer id
+    + status (required, string) ... "add|forget|blacklist"
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        { 
+            "<gamer_id>" : "<status>"
+        }
+
+
+## Scores [/v1/gamer/scores/{leaderbord}]
+
+### Set a releationship [POST]
+
++ Parameters
+    + leaderbord (required, string) ... the board where the gamer score in
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization: Basic gamer_id:gamer_secret
+
+    + Body
+        
+            {
+                "score": 100,
+                "info" : "what ever json"
+            }
+
++ Response 200 (application/json)
+
+        { 
+            "<gamer_id>" : "<status>"
+        }
