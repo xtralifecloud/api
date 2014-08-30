@@ -657,13 +657,13 @@ Properties are basic type (number, stringn boolean) json
             "<gamer_id_2>" : { displayName : "gamer2", lang : "fr" }
         }
         
-## Friend status [/v1/gamer/friends/{friendid}{?status}]
+## Friend status [/v1/gamer/friends/{friendid}?{status}]
 
 ### Set a releationship [POST]
 
 + Parameters
     + friendid (required, string) ... a gamer id
-    + status (required, string) ... "add|forget|blacklist"
+    + status (required, string) ... must be one of ["add", "forget", "blacklist"]
 
 + Request (application/json)
 
@@ -679,13 +679,33 @@ Properties are basic type (number, stringn boolean) json
             "<gamer_id>" : "<status>"
         }
 
++ Response 404 (application/json)
 
-## Scores [/v1/gamer/scores/{leaderbord}]
+        { 
+            "code" : "GamerIdNotFound"
+        }
 
-### Set a releationship [POST]
++ Response 404 (application/json)
+
+        { 
+            "code" : "StatusNotFound"
+        }
+
++ Response 501 (application/json)
+
+        { 
+            "code" : "StatusNotSupported"
+        }
+
+## Scores [/v1/gamer/scores/{leaderbord}{?order}]
 
 + Parameters
     + leaderbord (required, string) ... the board where the gamer score in
+    + order (optional, string) ... the order to sort the board `hightolow` or `lowtohigh`, default is hightolow
+
+### Post a new score [POST]
+
+this is not necessary the highest score, but only the highest is stored.
 
 + Request (application/json)
 
@@ -699,11 +719,78 @@ Properties are basic type (number, stringn boolean) json
         
             {
                 "score": 100,
-                "info" : "what ever json"
+                "info" : "whatever json"
             }
 
 + Response 200 (application/json)
 
         { 
-            "<gamer_id>" : "<status>"
+            "rank" : 1
+        }
+
+### Get a leaderboard [GET]
+
+`&type=xxx` string where `xxx` is one of ["highscore", "friendscore"], default is "highscore"
+`&page=xxx` number where `xxx` is one of 1..n or a special "me" for centered scores, default is 1
+`&count=xxx` number where `xxx` is the number of scores that should be returned in one page, default is 10
+
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        {
+            "<leaderboard>" : {
+                "page" : 2,
+                "maxpage" : 100,
+                "rankOfFirst" : 10,
+                scores : [ 
+                        { "gamer_id_1": 
+                            { score : 100, info: "whatever", , timesptamp : "", profile: {} } 
+                        }
+                        { "gamer_id_2": 
+                            { score : 90, info: "whatever", , timesptamp : "", profile: {} } 
+                        }
+                    ]
+            }
+        }
+
++ Response 404 (application/json)
+
+        {
+            "code" : "LeaderboardNotFound",
+        }  
+
++ Response 502 (application/json)
+
+        {
+            "code" : "NoScoreYet",
+            "message" : "Asked for centered scores on a gamer who never scores"
+        }  
+
+
+## Scores [/v1/gamer/bestscores]
+
+### Get all the gamer's bestscores [GET]
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        {
+            "easy" : { score:100, info : "desc" , timesptamp : ""}
+            "meduim" : { score:20, info : "desc", timesptamp : "" }
+            "hard" : { score:10, info : "desc", timesptamp : "" }
         }
