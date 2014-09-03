@@ -293,7 +293,7 @@ then the result will be
         }
 
 
-### Get properties [GET]
+### Get profile [GET]
 
 + Request (application/json)
 
@@ -306,10 +306,8 @@ then the result will be
 + Response 200 (application/json)
 
         { 
-            "properties" : {
-                "Board": "river",
-                "Level" : 20
-                "Expert" : false
+            "profile" : {
+                "displayName": "someone",
             }
         }
 
@@ -585,7 +583,7 @@ They are related to a game.
 
 ### Set properties [POST]
 
-Properties are basic type (number, stringn boolean) json
+Properties are basic type (number, string, boolean) or array of basic type
 
 + Request (application/json)
 
@@ -606,12 +604,7 @@ Properties are basic type (number, stringn boolean) json
 + Response 200 (application/json)
 
         { 
-            "properties" : {
-                "Board": "river",
-                "Level" : 20
-                "Expert" : false
-            },
-            "updated" : true
+            "done" : true
         }
 
 
@@ -634,6 +627,91 @@ Properties are basic type (number, stringn boolean) json
                 "Expert" : false
             }
         }
+
+### delete properties [DEL]
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        { 
+            "done": true
+        }
+
+
+
+## Properties [/v1/gamer/properties/{key}]
+
+Properties are used to allow match making...
+They are related to a game.
+
++ Parameters
+    + key (required, string) ... name of the property
+
+### Set property [POST]
+
+Properties are basic type (number, string, boolean) or array of basic type
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization: Basic gamer_id:gamer_secret
+
+    + Body
+        
+            {
+                "value": "river",
+            }
+
++ Response 200 (application/json)
+
+        { 
+            "done" : true
+        }
+
+
+### Get property [GET]
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        { 
+            "Board": "river"
+        }
+
+
+### delete property [DEL]
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        { 
+            "done": true
+        }
+
 
 ## Friends [/v1/gamer/friends/{?status}]
 
