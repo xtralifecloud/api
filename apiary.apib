@@ -920,7 +920,7 @@ Messages are sent to a specific user, in a specific domain. Messages are **alway
 The response body will contain a copy of the message just sent, with an added `id` field. 
 
 + Parameters
-    + domain (required, string, `private`) ... The domain (can be `private`)
+    + domain (required, string, `private`) ... The domain
     + gamer_id (required, string, `5402cf700530df4fa7ed3629`) ... The recepient for the message
 
 + Request (application/json)
@@ -954,17 +954,18 @@ The response body will contain a copy of the message just sent, with an added `i
 
 ## GET /v1/gamer/event/{domain}{?ack}{&autoack}{&timeout}
 
-This route uses long polling to deliver messages. It can block for a specified amount of time (with `?timeout=ms`).
+This route uses long polling to deliver messages. It will block for a specified amount of time (with `?timeout=ms`) or 50 seconds (the default).
 
-When a message is sent, this call will return with a `200` HTTP status code. If it returns because of the timeout, the response code is `204`.
+When a message is received, this call will return with a `200` HTTP status code. If it returns because of the timeout, the response code is `204`.
 
-To guarantee delivery, acknowledgement is necessary. It can 
+To guarantee delivery, acknowledgement is necessary and by default, it's automatic (`?ack=auto`). 
+
+If you want to ack messages, pass `?ack=<messageId>` where `messageID` is the ID of the latest received message (or an empty string to bootstrap). 
 
 + Parameters
-    + domain (required, string, `private`) ... The domain (can be `private`)
-    + ack (optional, string, `5cf3baf5-742c-4c3c-ad88-d12d84b01574`) ... The message ID to ack
-    + autoack (optional, boolean, `false`) ... Acknowledge messages automatically (default `false`)
-    + timeout (optional, integer, `50000`) ... The long polling timeout, in milliseconds (default (`50000`ms)
+    + domain (required, string, `private`) ... The domain
+    + ack = `auto` (optional, string, `5cf3baf5-742c-4c3c-ad88-d12d84b01574`) ... The message ID to ack
+    + timeout = `50000` (optional, integer) ... The long polling timeout, in milliseconds
 
 + Request (application/json)
 
