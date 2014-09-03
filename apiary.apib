@@ -21,7 +21,7 @@ Every request should have two headers set with your game credentials :
 |x-apikey   |Your API key   |
 |x-apisecret|Your API secret|
 
-# Gamers routes 
+# Group Login 
 
 In addition to the Authentication above, gamers are authenticated too.
 Before playing, the gamer needs an identity... Login provides such an identity.
@@ -243,6 +243,8 @@ Used to unlink a user account from Facebook or Google+ credentials.
 
 + Response 200 (application/json)
 
+# Group Gamer profile
+
 ## Profile [/v1/gamer/profile]
 
 Profile are data related to the user (globally)
@@ -291,7 +293,7 @@ then the result will be
         }
 
 
-### Get properties [GET]
+### Get profile [GET]
 
 + Request (application/json)
 
@@ -310,6 +312,8 @@ then the result will be
                 "Expert" : false
             }
         }
+
+# Group Key-Value Store
 
 ## Gamer VFS  [/v1/gamer/vfs/{domain}/{key}]
 
@@ -474,6 +478,8 @@ You can store data easily. Simply send the data to be stored, as a JSON object, 
             "data" : "optional error data" 
         }  
 
+# Group Inventories and transactions
+
 ## Transactions [/v1/gamer/tx]
 
 Transactions are used to keep track of any inventory or portfolio or wallet... It's basic functionality
@@ -576,6 +582,8 @@ The balance is also returned each time you create a new transaction
             "Arrows" : 20
         }
 
+# Group Gamer Properties
+
 ## Properties [/v1/gamer/properties]
 
 Properties are used to allow match making...
@@ -650,7 +658,6 @@ Properties are basic type (number, stringn boolean) json
         }
 
 
-
 ## Property [/v1/gamer/properties/{key}]
 
 Properties are used to allow match making...
@@ -717,6 +724,8 @@ Properties are basic type (number, string, boolean) or array of basic type
             "done": true
         }
 
+
+# Group Social features
 
 ## Friends [/v1/gamer/friends/{?status}]
 
@@ -794,6 +803,8 @@ Properties are basic type (number, string, boolean) or array of basic type
             "code" : "StatusNotSupported"
         }
 
+# Group Scores and Leaderboards
+
 ## Scores [/v1/gamer/scores/{leaderbord}{?order}]
 
 + Parameters
@@ -828,7 +839,9 @@ this is not necessary the highest score, but only the highest is stored.
 ### Get a leaderboard [GET]
 
 `&type=xxx` string where `xxx` is one of ["highscore", "friendscore"], default is "highscore"
+
 `&page=xxx` number where `xxx` is one of 1..n or a special "me" for centered scores, default is 1
+
 `&count=xxx` number where `xxx` is the number of scores that should be returned in one page, default is 10
 
 
@@ -891,3 +904,43 @@ this is not necessary the highest score, but only the highest is stored.
             "meduim" : { score:20, info : "desc", timesptamp : "" }
             "hard" : { score:10, info : "desc", timesptamp : "" }
         }
+
+# Group Events
+
+## Send and receive messages [/v1/gamer/event/{domain}]
+
+
+Clan of the Cloud let's you send and receive messages between gamers.
+
+You can use this feature for inter-application messaging too, and use it to send any kind of json message.
+
+Ordered delivery is guaranteed, and acknowledgement of each message is required.
+
+### Send message [POST]
+
++ Parameters
+    + domain (required, string) ... The domain (can be `private`) to use
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization: Basic gamer_id:gamer_secret
+
+    + Body
+        
+            {
+                "score": 100,
+                "info" : "whatever json"
+            }
+            
++ Response 200 (application/json)
+
+        {
+            "easy" : { score:100, info : "desc" , timesptamp : ""}
+            "meduim" : { score:20, info : "desc", timesptamp : "" }
+            "hard" : { score:10, info : "desc", timesptamp : "" }
+        }
+
