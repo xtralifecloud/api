@@ -907,19 +907,21 @@ this is not necessary the highest score, but only the highest is stored.
 
 # Group Events
 
-## Send and receive messages [/v1/gamer/event/{domain}]
-
-
 Clan of the Cloud let's you send and receive messages between gamers.
 
 You can use this feature for inter-application messaging too, and use it to send any kind of json message.
 
-Ordered delivery is guaranteed, and acknowledgement of each message is required.
+Ordered delivery is guaranteed, and acknowledgement (or auto-acknowledgement) of each message is required.
 
-### Send message [POST]
+## POST /v1/gamer/event/{domain}/{gamer_id}
+
+Messages are sent to a specific user, in a specific domain. Messages are **always** JSON objects.
+
+The response body will contain a copy of the message just sent, with an added `id` field. 
 
 + Parameters
-    + domain (required, string) ... The domain (can be `private`)
+    + domain (required, string, `private`) ... The domain (can be `private`)
+    + gamer_id (required, string, `5402cf700530df4fa7ed3629`) ... The recepient for the message
 
 + Request (application/json)
 
@@ -932,15 +934,55 @@ Ordered delivery is guaranteed, and acknowledgement of each message is required.
     + Body
         
             {
-                "score": 100,
-                "info" : "whatever json"
+                "key": "value",
+                "anotherKey" : "another value",
+                "data" : [{
+                    "any": "data"
+                }]
             }
             
 + Response 200 (application/json)
 
-        {
-            "easy" : { score:100, info : "desc" , timesptamp : ""}
-            "meduim" : { score:20, info : "desc", timesptamp : "" }
-            "hard" : { score:10, info : "desc", timesptamp : "" }
-        }
+            {
+                "id" : "5cf3baf5-742c-4c3c-ad88-d12d84b01574",
+                "key": "value",
+                "anotherKey" : "another value",
+                "data" : [{
+                    "any": "data"
+                }]
+            }
 
+## GET /v1/gamer/event/{domain}{?ack}{&autoack}{&timeout}
+
+This route uses long polling to deliver messages. It can block for a specified amount of time (with `?timeout=ms`).
+
+When a message is sent, this call will return with a `200` HTTP status code. If it returns because of the timeout, the response code is `204`.
+
+To guarantee delivery, acknowledgement is necessary. It can 
+
++ Parameters
+    + domain (required, string, `private`) ... The domain (can be `private`)
+    + ack (optional, string, `5cf3baf5-742c-4c3c-ad88-d12d84b01574`) ... The message ID to ack
+    + autoack (optional, boolean, `false`) ... Acknowledge messages automatically (default `false`)
+    + timeout (optional, integer, `50000`) ... The long polling timeout, in milliseconds (default (`50000`ms)
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+            {
+                "id" : "5cf3baf5-742c-4c3c-ad88-d12d84b01574",
+                "key": "value",
+                "anotherKey" : "another value",
+                "data" : [{
+                    "any": "data"
+                }]
+            }
+
++ Response 204
