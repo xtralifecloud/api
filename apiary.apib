@@ -291,7 +291,7 @@ then the result will be
         }
 
 
-### Get profile [GET]
+### Get properties [GET]
 
 + Request (application/json)
 
@@ -304,8 +304,10 @@ then the result will be
 + Response 200 (application/json)
 
         { 
-            "profile" : {
-                "displayName": "someone",
+            "properties" : {
+                "Board": "river",
+                "Level" : 20
+                "Expert" : false
             }
         }
 
@@ -581,7 +583,7 @@ They are related to a game.
 
 ### Set properties [POST]
 
-Properties are basic type (number, string, boolean) or array of basic type
+Properties are basic type (number, stringn boolean) json
 
 + Request (application/json)
 
@@ -602,7 +604,12 @@ Properties are basic type (number, string, boolean) or array of basic type
 + Response 200 (application/json)
 
         { 
-            "done" : true
+            "properties" : {
+                "Board": "river",
+                "Level" : 20
+                "Expert" : false
+            },
+            "updated" : true
         }
 
 
@@ -626,7 +633,7 @@ Properties are basic type (number, string, boolean) or array of basic type
             }
         }
 
-### delete properties [DEL]
+### delete properties [DELETE]
 
 + Request (application/json)
 
@@ -694,7 +701,7 @@ Properties are basic type (number, string, boolean) or array of basic type
         }
 
 
-### delete property [DEL]
+### delete property [DELETE]
 
 + Request (application/json)
 
@@ -752,13 +759,27 @@ Properties are basic type (number, string, boolean) or array of basic type
 + Response 200 (application/json)
 
         { 
-            "done" : "1"
+            "<gamer_id>" : "<status>"
         }
 
 + Response 404 (application/json)
 
         { 
             "code" : "GamerIdNotFound"
+        }
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        { 
+            "<gamer_id>" : "<status>"
         }
 
 + Response 404 (application/json)
@@ -773,12 +794,11 @@ Properties are basic type (number, string, boolean) or array of basic type
             "code" : "StatusNotSupported"
         }
 
-## Scores [/v1/gamer/scores/{leaderbord}?{order}]
+## Scores [/v1/gamer/scores/{leaderbord}{?order}]
 
 + Parameters
     + leaderbord (required, string) ... the board where the gamer score in
     + order (optional, string) ... the order to sort the board `hightolow` or `lowtohigh`, default is hightolow
-    + type (optional, string) ... the order to sort the board `hightolow` or `lowtohigh`, default is hightolow
 
 ### Post a new score [POST]
 
@@ -802,8 +822,7 @@ this is not necessary the highest score, but only the highest is stored.
 + Response 200 (application/json)
 
         { 
-            "done" : 1
-            "rank" : 3
+            "rank" : 1
         }
 
 ### Get a leaderboard [GET]
@@ -853,7 +872,7 @@ this is not necessary the highest score, but only the highest is stored.
         }  
 
 
-## Scores [/v1/gamer/bestscores]
+## BestScores [/v1/gamer/bestscores]
 
 ### Get all the gamer's bestscores [GET]
 
