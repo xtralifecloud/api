@@ -644,7 +644,7 @@ Properties are basic type (number, string, boolean) or array of basic type
 
 
 
-## Properties [/v1/gamer/properties/{key}]
+## Property [/v1/gamer/properties/{key}]
 
 Properties are used to allow match making...
 They are related to a game.
@@ -752,27 +752,13 @@ Properties are basic type (number, string, boolean) or array of basic type
 + Response 200 (application/json)
 
         { 
-            "<gamer_id>" : "<status>"
+            "done" : "1"
         }
 
 + Response 404 (application/json)
 
         { 
             "code" : "GamerIdNotFound"
-        }
-
-+ Request (application/json)
-
-    + Headers
-    
-            x-apikey : test_api_key
-            x-apisecret : test_api_secret
-            Authorization: Basic gamer_id:gamer_secret
-
-+ Response 200 (application/json)
-
-        { 
-            "<gamer_id>" : "<status>"
         }
 
 + Response 404 (application/json)
@@ -787,11 +773,12 @@ Properties are basic type (number, string, boolean) or array of basic type
             "code" : "StatusNotSupported"
         }
 
-## Scores [/v1/gamer/scores/{leaderbord}{?order}]
+## Scores [/v1/gamer/scores/{leaderbord}?{order}]
 
 + Parameters
     + leaderbord (required, string) ... the board where the gamer score in
     + order (optional, string) ... the order to sort the board `hightolow` or `lowtohigh`, default is hightolow
+    + type (optional, string) ... the order to sort the board `hightolow` or `lowtohigh`, default is hightolow
 
 ### Post a new score [POST]
 
@@ -815,7 +802,8 @@ this is not necessary the highest score, but only the highest is stored.
 + Response 200 (application/json)
 
         { 
-            "rank" : 1
+            "done" : 1
+            "rank" : 3
         }
 
 ### Get a leaderboard [GET]
