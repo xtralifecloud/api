@@ -65,13 +65,11 @@ Both `gamer_id` and `gamer_secret` are returned by `/v1/gamer/login`.
 
 A JSON object must be sent in the request body with the following structure.
 
-    IMPL We should decide if ?parameters would be better for actions... I think so
-
 |Field|Description|Value|
 |---|---|---|
 |network|string, required|can be one of ["raw", "facebook", "googleplus"]
 |id|string, required | the user ID for this network
-|token|string, required| the user secret/token for this network
+|secret|string, required| the user secret/token for this network
 
 ### Response description
 
@@ -100,7 +98,7 @@ The response is a JSON object.
             { 
                 "network": "facebook",
                 "id" : "1000001010",
-                "token" : "CAAIoRjU6xxYBAAy5Ymu...7XAehrcVQBUOG7oBVNatEUZD"
+                "secret" : "CAAIoRjU6xxYBAAy5Ymu...7XAehrcVQBUOG7oBVNatEUZD"
             }
 
 + Response 200 (application/json)
@@ -125,7 +123,7 @@ The response is a JSON object.
             { 
                 "network": "facebook",
                 "id" : "1000001010",
-                "token" : "CAAIoRjU6xxYBAAy5Ymu...7XAehrcVQBUOG7oBVNatEUZD"
+                "secret" : "CAAIoRjU6xxYBAAy5Ymu...7XAehrcVQBUOG7oBVNatEUZD"
             }
 
 + Response 401 (application/json)
@@ -761,6 +759,20 @@ Properties are basic type (number, string, boolean) or array of basic type
 
         { 
             "code" : "GamerIdNotFound"
+        }
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        { 
+            "<gamer_id>" : "<status>"
         }
 
 + Response 404 (application/json)
