@@ -952,7 +952,7 @@ The response body will contain a copy of the message just sent, with an added `i
                 }]
             }
 
-## GET /v1/gamer/event/{domain}{?ack}{&autoack}{&timeout}
+## GET /v1/gamer/event/{domain}{?ack}{&timeout}
 
 This route uses long polling to deliver messages. It will block for a specified amount of time (with `?timeout=ms`) or 50 seconds (the default).
 
