@@ -176,7 +176,7 @@ The login/anonymous route is used to create a new gamer without any informations
 
 Log a gamer out
 
-+ Request
++ Request (application/json)
 
     + Headers
     
@@ -186,7 +186,7 @@ Log a gamer out
 
 + Response 200 
 
-+ Request
++ Request (application/json)
 
     + Headers
     
@@ -194,14 +194,14 @@ Log a gamer out
             x-apisecret : test_api_secret
             Authorization : Basic INVALID GAMER IDENTITY
 
-+ Response 401
++ Response 401 (application/json)
 
         {
             "code" : "Unauthorized",
             "message" : "Invalid Gamer Credentials"
         }
         
-+ Request
++ Request (application/json)
 
     + Headers
     
@@ -220,7 +220,7 @@ Log a gamer out
 
 Used to unlink a user account from Facebook or Google+ credentials.
 
-+ Request
++ Request (application/json)
 
     + Headers
     
@@ -316,7 +316,7 @@ then the result will be
     + limit = `10` (optional, number) ... number of desired responses
     + skip = `0` (optional, number) ... skip the `skip` firsts responses
 
-+ Request
++ Request (application/json)
 
     + Headers
     
@@ -343,7 +343,7 @@ then the result will be
 + Parameters
     + id (required, string) ... the id to check
 
-+ Request
++ Request (application/json)
 
     + Headers
     
@@ -366,7 +366,7 @@ then the result will be
     + network (required, string) ... the network on which to search "facebook", "google"
     + id (required, string) ... the id in the network referential to check
 
-+ Request
++ Request (application/json)
 
     + Headers
     
@@ -419,7 +419,7 @@ but you can create other domains to share data between apps, or even between app
     + domain (required, string, `private`) ... the domain where to retreive the key/value
     + key (optional, string) ... the desired key, if omited all keys and values of the domains will be returned
 
-+ Request
++ Request (application/json)
 
     + Headers
     
@@ -433,7 +433,7 @@ but you can create other domains to share data between apps, or even between app
             "key" : "data which could be a json"
         }
 
-+ Request
++ Request (application/json)
 
     + Headers
     
@@ -488,7 +488,7 @@ You can store data easily. Simply send the data to be stored, as a JSON object, 
     
             {"whatever": "your JSON value"}
             
-+ Response 200
++ Response 200 (application/json)
 
     + Body
     
@@ -523,7 +523,7 @@ You can store data easily. Simply send the data to be stored, as a JSON object, 
             x-apisecret : test_api_secret
             Authorization : Basic gamer_id:gamer_secret
             
-+ Response 200
++ Response 200 (application/json)
 
     + Body
     
