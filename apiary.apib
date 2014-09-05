@@ -313,6 +313,82 @@ then the result will be
             }
         }
 
+# Group Gamer Querying
+
+## Find Users  [/v1/gamer{?q}{&limit}{&skip}]  
+
+### search [GET]
+
++ Parameters
+    + q (required, string) ... the value to match with
+    + limit (optional, number) ... number of desired responses , default is 10
+    + skip (optional, number) ... skip the `skip` firsts responses, default is 0
+
++ Request
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization : Basic gamer_id:gamer_secret
+            
++ Response 200 (application/json)
+
+        {
+            "count" : 10,
+            "result" : [
+                { 
+                "gamer_id" : "dfg54g2dfg54sqdf32wfds54fqdf",
+                "profile" : {}
+                }
+            ]
+        }
+
+## Valid gamer_id  [/v1/gamer/gamer_id/{id}]  
+
+### check [GET]
+
++ Parameters
+    + id (required, string) ... the id to check
+
++ Request
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization : Basic gamer_id:gamer_secret
+            
++ Response 200 (application/json)
+
+        {
+            "gamer_id" : "dfg54g2dfg54sqdf32wfds54fqdf",
+            "profile" : {}
+        }
+
+## Find a "Network" gamer_id  [/v1/gamer/{network}/{id}]  
+
+### check [GET]
+
++ Parameters
+    + network (required, string) ... the network on which to search "facebook", "google"
+    + id (required, string) ... the id in the network referential to check
+
++ Request
+
+    + Headers
+    
+            x-apikey : test_api_key
+            x-apisecret : test_api_secret
+            Authorization : Basic gamer_id:gamer_secret
+            
++ Response 200 (application/json)
+
+        {
+            "gamer_id" : "dfg54g2dfg54sqdf32wfds54fqdf",
+            "profile" : {}
+        }
+
 # Group Key-Value Store
 
 ## Gamer VFS  [/v1/gamer/vfs/{domain}/{key}]
