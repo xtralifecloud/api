@@ -990,7 +990,7 @@ You can use this feature for inter-application messaging too, and use it to send
 
 Ordered delivery is guaranteed, and acknowledgement (or auto-acknowledgement) of each message is required.
 
-## POST /v1/gamer/event/{domain}/{gamer_id}
+### POST /v1/gamer/event/{domain}/{gamer_id}
 
 Messages are sent to a specific user, in a specific domain. Messages are **always** JSON objects.
 
@@ -1029,7 +1029,7 @@ The response body will contain a copy of the message just sent, with an added `i
                 }]
             }
 
-## GET /v1/gamer/event/{domain}{?ack}{&timeout}
+### GET /v1/gamer/event/{domain}{?ack}{&timeout}
 
 This route uses long polling to deliver messages. It will block for a specified amount of time (with `?timeout=ms`) or 50 seconds (the default).
 
@@ -1037,11 +1037,13 @@ When a message is received, this call will return with a `200` HTTP status code.
 
 To guarantee delivery, acknowledgement is necessary and by default, it's automatic (`?ack=auto`). 
 
-If you want to ack messages, pass `?ack=<messageId>` where `messageID` is the ID of the latest received message (or an empty string to bootstrap). 
+If you want to ack messages, pass `?ack=<messageId>` where `messageID` is the ID of the latest received message (use an empty string to bootstrap). 
+
+If the call times out without, the HTTP status code is 204. If a new message has been received, it's 200.
 
 + Parameters
     + domain (required, string, `private`) ... The domain
-    + ack = `auto` (optional, string, `5cf3baf5-742c-4c3c-ad88-d12d84b01574`) ... The message ID to ack
+    + ack = `auto` (optional, string, `5cf3baf5-742c-4c3c-ad88-d12d84b01574`) ... The message ID to acknowledge
     + timeout = `50000` (optional, integer) ... The long polling timeout, in milliseconds
 
 + Request (application/json)
