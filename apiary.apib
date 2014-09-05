@@ -560,7 +560,7 @@ And feel free to invent new uses!
 A transaction is a Hash where the key is the unit, and the value is a positive (credit) or negative (debit) amount.
 So a single transaction can both credit and debit different units.
 
-+ Request (application/json; charset=utf-8)
++ Request (application/json)
 
     + Headers
     
@@ -621,7 +621,7 @@ Use this API to list the transactions that took place for this gamer. You can sp
             x-apisecret : testgame-secret
             Authorization: Basic gamer_id:gamer_secret
 
-+ Response 200 (application/json)
++ Response 200 (application/json; charset=utf-8)
 
         [
             { "ts": '2014-08-27T16:44:17.796Z', "tx": { "Gold": 100 }, "desc": 'jsclient test' },
@@ -643,7 +643,7 @@ The balance is also returned each time you create a new transaction
             x-apisecret : testgame-secret
             Authorization: Basic gamer_id:gamer_secret
 
-+ Response 200 (application/json)
++ Response 200 (application/json; charset=utf-8)
 
         { 
             "Gold": 130,
