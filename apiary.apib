@@ -881,15 +881,15 @@ Properties are basic type (number, string, boolean) or array of basic type
 
 # Group Scores and Leaderboards
 
-## Scores [/v1/gamer/scores/{leaderbord}{?order}]
+## Scores
+
+### POST /v1/gamer/scores/{leaderbord}{?order}
+
+this is not necessary the highest score, but only the highest is stored.
 
 + Parameters
     + leaderbord (required, string) ... the board where the gamer score in
     + order (optional, string) ... the order to sort the board `hightolow` or `lowtohigh`, default is hightolow
-
-### Post a new score [POST]
-
-this is not necessary the highest score, but only the highest is stored.
 
 + Request (application/json)
 
@@ -912,13 +912,14 @@ this is not necessary the highest score, but only the highest is stored.
             "rank" : 1
         }
 
-### Get a leaderboard [GET]
+### GET /v1/gamer/scores/{leaderbord}{?order}{&type}{&page}{&count}
 
-`&type=xxx` string where `xxx` is one of ["highscore", "friendscore"], default is "highscore"
-
-`&page=xxx` number where `xxx` is one of 1..n or a special "me" for centered scores, default is 1
-
-`&count=xxx` number where `xxx` is the number of scores that should be returned in one page, default is 10
++ Parameters
+    + leaderbord (required, string) ... the board where the gamer score in
+    + order (optional, string) ... the order to sort the board `hightolow` or `lowtohigh`, default is hightolow
+    + type (optional, string) ... one of ["highscore", "friendscore"], default is "highscore"
+    + page (optional, number) ...  th epage number or a special "me" for centered scores, default is 1
+    + count (optional, number) ... the max returned rows, default is 10
 
 
 + Request (application/json)
@@ -953,7 +954,7 @@ this is not necessary the highest score, but only the highest is stored.
             "code" : "LeaderboardNotFound",
         }  
 
-+ Response 502 (application/json)
++ Response 402 (application/json)
 
         {
             "code" : "NoScoreYet",
