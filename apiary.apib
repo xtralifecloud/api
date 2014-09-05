@@ -99,7 +99,7 @@ The response is a JSON object.
                 "secret" : "CAAIoRjU6xxYBAAy5Ymu...7XAehrcVQBUOG7oBVNatEUZD"
             }
 
-+ Response 200 (application/json)
++ Response 200 (application/json; charset=utf-8)
 
         {
             "gamer_id" : "dfg54g2dfg54sqdf32wfds54fqdf",
@@ -124,7 +124,7 @@ The response is a JSON object.
                 "secret" : "CAAIoRjU6xxYBAAy5Ymu...7XAehrcVQBUOG7oBVNatEUZD"
             }
 
-+ Response 401 (application/json)
++ Response 401 (application/json; charset=utf-8)
 
         {
             "code" : "Unauthorized",
@@ -146,7 +146,7 @@ The login/anonymous route is used to create a new gamer without any informations
             x-apikey : testgame-key
             x-apisecret : testgame-secret
 
-+ Response 200 (application/json)
++ Response 200 (application/json; charset=utf-8)
 
         {
             "gamer_id" : "dfg54g2dfg54sqdf32wfds54fqdf",
@@ -163,7 +163,7 @@ The login/anonymous route is used to create a new gamer without any informations
             x-apikey : INVALID KEY
             x-apisecret : INVALID SECRET
 
-+ Response 401 (application/json)
++ Response 401 (application/json; charset=utf-8)
 
         {
             "code" : "Unauthorized",
@@ -184,7 +184,7 @@ Log a gamer out
             x-apisecret : testgame-secret
             Authorization : Basic gamer_id:gamer_secret
 
-+ Response 200 
++ Response 200 (application/json; charset=utf-8)
 
 + Request (application/json)
 
@@ -194,7 +194,7 @@ Log a gamer out
             x-apisecret : testgame-secret
             Authorization : Basic INVALID GAMER IDENTITY
 
-+ Response 401 (application/json)
++ Response 401 (application/json; charset=utf-8)
 
         {
             "code" : "Unauthorized",
@@ -209,7 +209,7 @@ Log a gamer out
             x-apisecret : INVALID API SECRET
             Authorization : Basic gamer_id:gamer_secret
 
-+ Response 401 (application/json)
++ Response 401 (application/json; charset=utf-8)
 
         {
             "code" : "Unauthorized",
@@ -233,7 +233,7 @@ Used to unlink a user account from Facebook or Google+ credentials.
                 "network": "facebook"
             }
 
-+ Response 200 (application/json)
++ Response 200 (application/json; charset=utf-8)
 
 # Group Gamer profile
 
@@ -274,7 +274,7 @@ then the result will be
                 "displayName": "Wonder Mike",
             }
 
-+ Response 200 (application/json)
++ Response 200 (application/json; charset=utf-8)
 
         { 
             "profile" : {
