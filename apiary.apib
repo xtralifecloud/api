@@ -21,7 +21,24 @@ Every request should have two headers set with your game credentials :
 |x-apikey   |Your API key   |
 |x-apisecret|Your API secret|
 
-# Group Login 
+## After login
+
+After login has been called, HTTP Basic Authentication will be used to authenticate every request.
+
+The 3 authentication headers will look like :
+
+|Header     | Value         |
+|---        |---            |
+|x-apikey   |Your API key   |
+|x-apisecret|Your API secret|
+|Authorization| Basic `gamer_id:gamer_secret` *(base64 encoded)*|
+
+Both `gamer_id` and `gamer_secret` are returned by `/v1/gamer/login`.
+
+**Note:** It is your responsibility to store these to help the user log in later (in RAW mode).
+
+
+# Group Login routes
 
 In addition to the App Authentication above, gamers are authenticated too.
 Before playing, the gamer needs an identity... Login provides such an identity.
@@ -37,24 +54,6 @@ Login for authenticated gamers will use one of these authentication methods :
 * Google+ Sign-in: use the `ID` and the `oauth token` from Google+
 
 * anonymous: use the `gamer_id` and the `gamer_secret` from a previous login
-
-
-
-### After login
-
-After login has been called, HTTP Basic Authentication will be used to authenticate every request.
-
-The 3 authentication headers will look like :
-
-|Header     | Value         |
-|---        |---            |
-|x-apikey   |Your API key   |
-|x-apisecret|Your API secret|
-|Authorization| Basic `gamer_id:gamer_secret` *(base64 encoded)*|
-
-Both `gamer_id` and `gamer_secret` are returned by `/v1/gamer/login`.
-
-**Note:** It is your responsibility to store these to help the user log in later (in RAW mode).
 
 
 ## POST /v1/gamer/login
@@ -314,8 +313,8 @@ then the result will be
 
 + Parameters
     + q (required, string) ... the value to match with
-    + limit (optional, number) ... number of desired responses , default is 10
-    + skip (optional, number) ... skip the `skip` firsts responses, default is 0
+    + limit = `10` (optional, number) ... number of desired responses
+    + skip = `0` (optional, number) ... skip the `skip` firsts responses
 
 + Request
 
@@ -417,8 +416,8 @@ but you can create other domains to share data between apps, or even between app
 |gamervfs|json| list of key/value associated to the gamer
 
 + Parameters
-    + domain (required, string) ... the domain where to retreive the key/value
-    + key (optional, string) ... the desired key, if omited all keys of the domains will be returned
+    + domain (required, string, `private`) ... the domain where to retreive the key/value
+    + key (optional, string) ... the desired key, if omited all keys and values of the domains will be returned
 
 + Request
 
@@ -474,7 +473,7 @@ You can store data easily. Simply send the data to be stored, as a JSON object, 
 **if domain and/or key don't exist, they are created**
 
 + Parameters
-    + domain (required, string) ... the domain where to store the key/value
+    + domain (required, string, `private`) ... the domain where to store the key/value
     + key (required, string) ... the desired key
 
 + Request (application/json)
@@ -513,7 +512,7 @@ You can store data easily. Simply send the data to be stored, as a JSON object, 
 * `Domain not found` ... the specified domain doesn't exist
 
 + Parameters
-    + domain (required, string) ... the domain from where to get the key/value
+    + domain (required, string, `private`) ... the domain from where to get the key/value
     + key (optional, string) ... the key to be removed (all if not specified)
 
 + Request
@@ -612,7 +611,7 @@ Use this API to list the transactions that took place for this gamer. You can sp
 `unit` is specified, the result will only contain transactions about this unit.
 
 + Parameters
-    + unit (optional, string, `Gold`) ... The domain
+    + unit (optional, string, `Gold`) ... To restrict the history to a single Unit
 
 + Request (application/json)
 
@@ -821,7 +820,7 @@ Properties are basic type (number, string, boolean) or array of basic type
 
 + Parameters
     + friendid (required, string) ... a gamer id
-    + status (required, string) ... must be one of ["add", "forget", "blacklist"]
+    + status (required, string) ... must be one of [`add` | `forget` | `blacklist`]
 
 + Request (application/json)
 
@@ -879,7 +878,7 @@ this is not necessary the highest score, but only the highest is stored.
 
 + Parameters
     + leaderbord (required, string) ... the board where the gamer score in
-    + order (optional, string) ... the order to sort the board `hightolow` or `lowtohigh`, default is hightolow
+    + order = `hightolow` (optional, string) ... the order to sort the board `hightolow` or `lowtohigh`
 
 + Request (application/json)
 
@@ -906,10 +905,10 @@ this is not necessary the highest score, but only the highest is stored.
 
 + Parameters
     + leaderbord (required, string) ... the board where the gamer score in
-    + order (optional, string) ... the order to sort the board `hightolow` or `lowtohigh`, default is hightolow
-    + type (optional, string) ... one of ["highscore", "friendscore"], default is "highscore"
-    + page (optional, number) ...  th epage number or a special "me" for centered scores, default is 1
-    + count (optional, number) ... the max returned rows, default is 10
+    + order = `hightolow` (optional, string) ... the order to sort the board `hightolow` or `lowtohigh`
+    + type = `highscore` (optional, string) ... one of ["highscore", "friendscore"]
+    + page = `1` (optional, number) ...  th epage number or a special "me" for centered scores
+    + count = `10` (optional, number) ... the max returned rows
 
 
 + Request (application/json)
