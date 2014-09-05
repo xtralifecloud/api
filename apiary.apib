@@ -23,10 +23,8 @@ Every request should have two headers set with your game credentials :
 
 # Group Login 
 
-In addition to the Authentication above, gamers are authenticated too.
+In addition to the App Authentication above, gamers are authenticated too.
 Before playing, the gamer needs an identity... Login provides such an identity.
-
-## Gamer login [/v1/gamer/login]
 
 The login route is used to authenticate a gamer, and get basic profile information about him.
 
@@ -38,7 +36,7 @@ Login for authenticated gamers will use one of these authentication methods :
 
 * Google+ Sign-in: use the `ID` and the `oauth token` from Google+
 
-* RAW: use the `gamer_id` and the `gamer_secret` from a previous login
+* anonymous: use the `gamer_id` and the `gamer_secret` from a previous login
 
 
 
@@ -59,7 +57,8 @@ Both `gamer_id` and `gamer_secret` are returned by `/v1/gamer/login`.
 **Note:** It is your responsibility to store these to help the user log in later (in RAW mode).
 
 
-### Login [POST]
+## POST /v1/gamer/login
+
 
 ### Body description
 
@@ -67,7 +66,7 @@ A JSON object must be sent in the request body with the following structure.
 
 |Field|Description|Value|
 |---|---|---|
-|network|string, required|can be one of ["raw", "facebook", "google"]
+|network|string, required|can be one of ["anonymous", "facebook", "google"]
 |id|string, required | the user ID for this network
 |secret|string, required| the user secret/token for this network
 
@@ -134,10 +133,8 @@ The response is a JSON object.
         }
 
 
-## Gamer anonymous login [/v1/gamer/login/anonymous]
+## POST /v1/gamer/login/anonymous
 The login/anonymous route is used to create a new gamer without any informations.
-
-### Login [POST]
 
 ### Response description
 
@@ -176,11 +173,9 @@ The login/anonymous route is used to create a new gamer without any informations
 
 
 
-## Gamer logout [/v1/gamer/logout]
+## POST /v1/gamer/logout
 
 Log a gamer out
-
-### Logout [POST]
 
 + Request
 
@@ -222,11 +217,9 @@ Log a gamer out
             "message" : "Invalid App Credentials"
         }
 
-## Unlink authentication network [/v1/gamer/unlink]
+## POST /v1/gamer/unlink
 
 Used to unlink a user account from Facebook or Google+ credentials.
-
-### Unlink [POST]
 
 + Request
 
@@ -554,9 +547,7 @@ You can store data easily. Simply send the data to be stored, as a JSON object, 
             "data" : "optional error data" 
         }  
 
-# Group Inventories and transactions
-
-## Transactions [/v1/gamer/tx]
+# Group transactions
 
 Transactions are used to keep track of any inventory or portfolio or wallet... It's basic functionality
 can be used in various contexts.
@@ -565,7 +556,8 @@ In the case of an inventory, transactions will add or remove units from it.
 When used as a portfolio (for virtual currency), transactions add or remove units too.
 And feel free to invent new uses!
 
-### Create transaction [POST]
+## POST /v1/gamer/tx
+
 A transaction is a Hash where the key is the unit, and the value is a positive (credit) or negative (debit) amount.
 So a single transaction can both credit and debit different units.
 
@@ -613,11 +605,14 @@ So a single transaction can both credit and debit different units.
 
 + Response 549
 
-### List transactions [GET]
+## GET /v1/gamer/tx{?unit}
 
 Use this API to list the transactions that took place for this gamer. You can specify an optional
 `?unit=xxx` parameter where `xxx` is the unit (Silver, Gold or Arrows in our example). If
 `unit` is specified, the result will only contain transactions about this unit.
+
++ Parameters
+    + unit (optional, string, `Gold`) ... The domain
 
 + Request (application/json)
 
@@ -635,12 +630,11 @@ Use this API to list the transactions that took place for this gamer. You can sp
             { "ts": '2014-08-27T16:02:22.371Z', "tx": { Gold: 100 }, "desc": 'jsclient test' }
         ]
 
-## Balance [/v1/gamer/tx/balance]
+## GET /v1/gamer/tx/balance
 
 Use this API to get the current balance. It will return a Hash of each unit and the amount held by the gamer.
 The balance is also returned each time you create a new transaction
 
-### Get the gamer's balance [GET]
 
 + Request (application/json)
 
@@ -803,9 +797,7 @@ Properties are basic type (number, string, boolean) or array of basic type
 
 # Group Social features
 
-## Friends [/v1/gamer/friends/{?status}]
-
-### Get list of friends [GET]
+## GET /v1/gamer/friends/{?status}
 
 + Parameters
     + status (optional, string) ... "blacklist" to retrieve the blacklisted gamer's
@@ -825,9 +817,7 @@ Properties are basic type (number, string, boolean) or array of basic type
             "<gamer_id_2>" : { displayName : "gamer2", lang : "fr" }
         }
         
-## Friend status [/v1/gamer/friends/{friendid}?{status}]
-
-### Set a releationship [POST]
+## POST /v1/gamer/friends/{friendid}?{status}
 
 + Parameters
     + friendid (required, string) ... a gamer id
@@ -962,9 +952,9 @@ this is not necessary the highest score, but only the highest is stored.
         }  
 
 
-## BestScores [/v1/gamer/bestscores]
+## GET /v1/gamer/bestscores
 
-### Get all the gamer's bestscores [GET]
+### Get all the gamer's bestscores 
 
 + Request (application/json)
 
