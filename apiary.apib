@@ -247,7 +247,7 @@ Fields can be added one be one, data are merged.
 The following fields can be set :
     ["displayName", "lang", "firstName", "lastName", "addr1", "addr2", "addr3", "avatar"]
 
-**note** : avatar must be an URL, lang is ISO-639-1 code
+**note** : avatar must be an URL, lang is the ISO-639-1 country code (http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)
 
 i.e when executing POST /v1/gamer/profile {"displayName": "Wonder Mike"}
 if the current profile is 
@@ -981,7 +981,12 @@ Ordered delivery is guaranteed, and acknowledgement (or auto-acknowledgement) of
 
 ### POST /v1/gamer/event/{domain}/{gamer_id}
 
-Messages are sent to a specific user, in a specific domain. Messages are **always** JSON objects.
+#### Send a message
+
+Use this API to send a message to another user from your game. Messages are sent to a specific user, in a specific domain. 
+You can use domains to send messages accross games (or use `private` for messages sent to your game only).
+
+Messages are **always** JSON objects (not strings nor binary data).
 
 The response body will contain a copy of the message just sent, with an added `id` field. 
 
@@ -1018,17 +1023,19 @@ The response body will contain a copy of the message just sent, with an added `i
                 }]
             }
 
+
 ### GET /v1/gamer/event/{domain}{?ack}{&timeout}
 
-This route uses long polling to deliver messages. It will block for a specified amount of time (with `?timeout=ms`) or 50 seconds (the default).
+#### Receive messages
 
-When a message is received, this call will return with a `200` HTTP status code. If it returns because of the timeout, the response code is `204`.
+This route uses long polling to deliver messages, one at a time. If more than one message was queued, you will have to call `receive` more than once.
+Normally, you'd setup a loop to call `receive` and deliver messages to your game asynchronously.
+
+`Receive` will block for a specified amount of time (with `?timeout=ms`) or 50 seconds (the default), and will be unblocked if a message is received, or if the call times out.
+When a message is received, the HTTP status code is `200`. If it returns because of the timeout, the response code is `204`.
 
 To guarantee delivery, acknowledgement is necessary and by default, it's automatic (`?ack=auto`). 
-
 If you want to ack messages, pass `?ack=<messageId>` where `messageID` is the ID of the latest received message (use an empty string to bootstrap). 
-
-If the call times out without, the HTTP status code is 204. If a new message has been received, it's 200.
 
 + Parameters
     + domain (required, string, `private`) ... The domain
