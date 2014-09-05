@@ -560,7 +560,7 @@ And feel free to invent new uses!
 A transaction is a Hash where the key is the unit, and the value is a positive (credit) or negative (debit) amount.
 So a single transaction can both credit and debit different units.
 
-+ Request (application/json)
++ Request (application/json; charset=utf-8)
 
     + Headers
     
@@ -572,7 +572,7 @@ So a single transaction can both credit and debit different units.
         
             {
                 transaction: { 
-                    "Gold": +100,
+                    "Gold": 100,
                     "Silver" : -2.5,
                     "Arrows" : 20
                 },
@@ -613,7 +613,7 @@ Use this API to list the transactions that took place for this gamer. You can sp
 + Parameters
     + unit (optional, string, `Gold`) ... To restrict the history to a single Unit
 
-+ Request (application/json)
++ Request
 
     + Headers
     
@@ -624,9 +624,9 @@ Use this API to list the transactions that took place for this gamer. You can sp
 + Response 200 (application/json)
 
         [
-            { "ts": '2014-08-27T16:44:17.796Z', "tx": { Gold: 100 }, "desc": 'jsclient test' },
-            { "ts": '2014-08-27T16:02:22.645Z', "tx": { Gold: -100, Silver: 1 }, "desc": 'jsclient test' },
-            { "ts": '2014-08-27T16:02:22.371Z', "tx": { Gold: 100 }, "desc": 'jsclient test' }
+            { "ts": '2014-08-27T16:44:17.796Z', "tx": { "Gold": 100 }, "desc": 'jsclient test' },
+            { "ts": '2014-08-27T16:02:22.645Z', "tx": { "Gold": -100, "Silver": 1 }, "desc": 'jsclient test' },
+            { "ts": '2014-08-27T16:02:22.371Z', "tx": { "Gold": 100 }, "desc": 'jsclient test' }
         ]
 
 ## GET /v1/gamer/tx/balance
@@ -635,7 +635,7 @@ Use this API to get the current balance. It will return a Hash of each unit and 
 The balance is also returned each time you create a new transaction
 
 
-+ Request (application/json)
++ Request
 
     + Headers
     
