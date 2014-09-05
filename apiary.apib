@@ -560,7 +560,7 @@ And feel free to invent new uses!
 A transaction is a Hash where the key is the unit, and the value is a positive (credit) or negative (debit) amount.
 So a single transaction can both credit and debit different units.
 
-+ Request
++ Request (application/json)
 
     + Headers
     
@@ -573,8 +573,8 @@ So a single transaction can both credit and debit different units.
             {
                 transaction: { 
                     "Gold": 100,
-                    "Silver" : -2.5,
-                    "Arrows" : 20
+                    "Silver": -2.5,
+                    "Arrows": 20
                 },
                 description: "This is an example transaction"
             }
@@ -583,8 +583,8 @@ So a single transaction can both credit and debit different units.
 
         { 
             "Gold": 130,
-            "Silver" : 0,
-            "Arrows" : 20
+            "Silver": 0,
+            "Arrows": 20
         }
         
 + Request (application/json)
@@ -624,9 +624,9 @@ Use this API to list the transactions that took place for this gamer. You can sp
 + Response 200 (application/json; charset=utf-8)
 
         [
-            { "ts": '2014-08-27T16:44:17.796Z', "tx": { "Gold": 100 }, "desc": 'jsclient test' },
-            { "ts": '2014-08-27T16:02:22.645Z', "tx": { "Gold": -100, "Silver": 1 }, "desc": 'jsclient test' },
-            { "ts": '2014-08-27T16:02:22.371Z', "tx": { "Gold": 100 }, "desc": 'jsclient test' }
+            { "ts": "2014-08-27T16:44:17.796Z", "tx": { "Gold": 100 }, "desc": "jsclient test" },
+            { "ts": "2014-08-27T16:02:22.645Z", "tx": { "Gold": -100, "Silver": 1 }, "desc": "jsclient test" },
+            { "ts": "2014-08-27T16:02:22.371Z", "tx": { "Gold": 100 }, "desc": "jsclient test" }
         ]
 
 ## GET /v1/gamer/tx/balance
@@ -643,12 +643,12 @@ The balance is also returned each time you create a new transaction
             x-apisecret : testgame-secret
             Authorization: Basic gamer_id:gamer_secret
 
-+ Response 200 (application/json; charset=utf-8)
++ Response 200 (application/json)
 
         { 
             "Gold": 130,
-            "Silver" : 1.5,
-            "Arrows" : 20
+            "Silver": 1.5,
+            "Arrows": 20
         }
 
 # Group Gamer Properties
@@ -674,8 +674,8 @@ Properties are basic type (number, stringn boolean) json
         
             {
                 "Board": "river",
-                "Level" : 20
-                "Expert" : false
+                "Level": 20
+                "Expert": false
             }
 
 + Response 200 (application/json)
@@ -683,10 +683,10 @@ Properties are basic type (number, stringn boolean) json
         { 
             "properties" : {
                 "Board": "river",
-                "Level" : 20
-                "Expert" : false
+                "Level": 20
+                "Expert": false
             },
-            "updated" : true
+            "updated": true
         }
 
 
