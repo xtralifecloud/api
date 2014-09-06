@@ -623,11 +623,12 @@ Use this API to list the transactions that took place for this gamer. You can sp
 
 + Response 200 (application/json; charset=utf-8)
 
-        [
+        { "history" : [
             { "ts": "2014-08-27T16:44:17.796Z", "tx": { "Gold": 100 }, "desc": "jsclient test" },
             { "ts": "2014-08-27T16:02:22.645Z", "tx": { "Gold": -100, "Silver": 1 }, "desc": "jsclient test" },
             { "ts": "2014-08-27T16:02:22.371Z", "tx": { "Gold": 100 }, "desc": "jsclient test" }
-        ]
+            ]
+        }
 
 ## GET /v1/gamer/tx/balance
 
