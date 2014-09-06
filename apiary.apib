@@ -812,10 +812,10 @@ Properties are basic type (number, string, boolean) or array of basic type
 
 + Response 200 (application/json)
 
-        { 
-            "<gamer_id_1>" : { displayName : "gamer1", lang : "en" },
-            "<gamer_id_2>" : { displayName : "gamer2", lang : "fr" }
-        }
+        { "friends|blacklisted" : [
+            { "<gamer_id_1>" : { displayName : "gamer1", lang : "en" } },
+            {"<gamer_id_2>" : { displayName : "gamer2", lang : "fr" } }
+        ] }
         
 ## POST /v1/gamer/friends/{friendid}?{status}
 
