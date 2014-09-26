@@ -399,21 +399,12 @@ data stored in a domain, you just have to share the Domain-Key.
 
 Your game has its own private Domain (see in FrontOffice dashboard) which you probably don't want to share
 but you can create other domains to share data between apps, or even between app-developers.
-
-    Anyway, I think we'll need, in the Game collection: the domains created by the dev, and the domains 'imported' by the dev
-    This will provide an additional level of security, and we'll have a list of valid domains to add stuff later
-    we could have in consul KV the following data { domains :{ private : "xqxsq", owned : ['qqss', 'qssqsd'], imported : ['qsqdd'] } theese will be added to mogodb games collection during the "configureGame" phase
  
 ### Get gamer's data [GET]
 
 ###### Possible values for error 404
 * `Key not found` ... the specified key doesn't exist
 * `Domain not found` ... the specified domain doesn't exist
-
-###### response description
-|Field|Description|Value|
-|---|---|---|
-|gamervfs|json| list of key/value associated to the gamer
 
 + Parameters
     + domain (required, string, `private`) ... the domain where to retreive the key/value
@@ -470,7 +461,7 @@ but you can create other domains to share data between apps, or even between app
 
 You can store data easily. Simply send the data to be stored, as a JSON object, in the body of the request. Note that simple strings are not allowed. Arrays and objects are.
 
-**if domain and/or key don't exist, they are created**
+**if key don't exist, they are created**
 
 + Parameters
     + domain (required, string, `private`) ... the domain where to store the key/value
@@ -545,6 +536,122 @@ You can store data easily. Simply send the data to be stored, as a JSON object, 
             "message" : "the specified key is not found"
             "data" : "optional error data" 
         }  
+
+## Game VFS  [/v1/vfs/{domain}/{key}]
+
+Game VFS is a key-value store you can use to associate data with a game. 
+
+Use it to store level, booard... any data your game would like to share among users.
+ 
+### Get game's data [GET]
+
+###### Possible values for error 404
+* `Key not found` ... the specified key doesn't exist
+* `Domain not found` ... the specified domain doesn't exist
+
++ Parameters
+    + domain (required, string, `private`) ... the domain where to retreive the key/value
+    + key (optional, string) ... the desired key, if omited all keys and values of the domains will be returned
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            
++ Response 200 (application/json)
+
+        {
+            "key" : "data which could be a json"
+        }
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            
++ Response 200 (application/json)
+
+        {
+            "key1" : "any json value, object, array for key1",
+            "key2" : "any json value, object, array for key2",
+            "key3" : "any json value, object, array for key3",
+            "key4" : "any json value, object, array for key4"
+        }
+
+
++ Response 404 (application/json)
+
+        {
+            "code" : "Key not found",
+            "message" : "the specified key is not found"
+            "data" : "optional error data" 
+        }  
+
+### Set game's data [PUT]
+
+You can store data easily. Simply send the data to be stored, as a JSON object, in the body of the request. Note that simple strings are not allowed. Arrays and objects are.
+
+**if key don't exist, they are created**
+
++ Parameters
+    + domain (required, string, `private`) ... the domain where to store the key/value
+    + key (required, string) ... the desired key
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            
+    + Body
+    
+            {"whatever": "your JSON value"}
+            
++ Response 200 (application/json)
+
+    + Body
+    
+            1
+ 
+    
+### Remove game's data [DELETE]
+
+    NOTE : we can't yet distinguish a missing key from an incorrect domain...
+
+###### Possible reasons for error 404
+* `Key not found` ... the specified key doesn't exist
+* `Domain not found` ... the specified domain doesn't exist
+
++ Parameters
+    + domain (required, string, `private`) ... the domain from where to get the key/value
+    + key (optional, string) ... the key to be removed (all if not specified)
+
++ Request
+
+    + Headers
+    
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            
++ Response 200 (application/json)
+
+    + Body
+    
+            1
+        
++ Response 404 (application/json)
+
+        {
+            "code" : "Key not found",
+            "message" : "the specified key is not found"
+            "data" : "optional error data" 
+        }  
+
 
 # Group transactions
 
@@ -797,7 +904,9 @@ Properties are basic type (number, string, boolean) or array of basic type
 
 # Group Social features
 
-## GET /v1/gamer/friends/{?status}
+## Friends
+
+### GET /v1/gamer/friends/{?status}
 
 + Parameters
     + status (optional, string) ... "blacklist" to retrieve the blacklisted gamer's
@@ -817,7 +926,7 @@ Properties are basic type (number, string, boolean) or array of basic type
             {"<gamer_id_2>" : { displayName : "gamer2", lang : "fr" } }
         ] }
         
-## POST /v1/gamer/friends/{friendid}?{status}
+### POST /v1/gamer/friends/{friendid}?{status}
 
 + Parameters
     + friendid (required, string) ... a gamer id
@@ -867,6 +976,92 @@ Properties are basic type (number, string, boolean) or array of basic type
 
         { 
             "code" : "StatusNotSupported"
+        }
+
+## SPONSORING
+
+## PUT /v1/gamer/godfather/
+
+Obtains a code for sponsoring. The code is different for each game
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        { "godfathercode" : "wSde2dF" }
+
+        
+## POST /v1/gamer/godfather
+
+Use to tell that the current user is the godchild of the godfather pass in the body.
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
+    + Body
+        
+            {
+                "godfather": "wSde2dF",
+            }
+
++ Response 200 (application/json)
+
+        { 
+            "done" : 1
+        }
+
++ Response 438 (application/json)
+
+        { 
+            "code" : "alreadyGodchild"
+        }
+
+
+## GET /v1/gamer/godfather
+
+Retreive the godfather of the current user.
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        { 
+            "<gamer_id>" : "..."
+        }
+
+## GET /v1/gamer/godchidren
+
+Get all the godchildren of the current user.
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        { 
+            "godchildren" : [ { "gamer_id" : "..."}]
         }
 
 # Group Scores and Leaderboards
