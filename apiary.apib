@@ -653,7 +653,7 @@ You can store data easily. Simply send the data to be stored, as a JSON object, 
         }  
 
 
-# Group transactions
+# Group Transactions
 
 Transactions are used to keep track of any inventory or portfolio or wallet... It's basic functionality
 can be used in various contexts.
@@ -662,10 +662,13 @@ In the case of an inventory, transactions will add or remove units from it.
 When used as a portfolio (for virtual currency), transactions add or remove units too.
 And feel free to invent new uses!
 
-## POST /v1/gamer/tx
+## POST /v1/gamer/tx/{domain}
 
 A transaction is a Hash where the key is the unit, and the value is a positive (credit) or negative (debit) amount.
 So a single transaction can both credit and debit different units.
+
++ Parameters
+    + domain (required, string, `private`) ... The domain used in the transaction
 
 + Request (application/json)
 
@@ -711,13 +714,14 @@ So a single transaction can both credit and debit different units.
 
 + Response 549
 
-## GET /v1/gamer/tx{?unit}
+## GET /v1/gamer/tx/{domain}{?unit}
 
 Use this API to list the transactions that took place for this gamer. You can specify an optional
 `?unit=xxx` parameter where `xxx` is the unit (Silver, Gold or Arrows in our example). If
 `unit` is specified, the result will only contain transactions about this unit.
 
 + Parameters
+    + domain (required, string, `private`) ... The domain used in the transaction
     + unit (optional, string, `Gold`) ... To restrict the history to a single Unit
 
 + Request
@@ -737,11 +741,13 @@ Use this API to list the transactions that took place for this gamer. You can sp
             ]
         }
 
-## GET /v1/gamer/tx/balance
+## GET /v1/gamer/tx/{domain}/balance
 
 Use this API to get the current balance. It will return a Hash of each unit and the amount held by the gamer.
 The balance is also returned each time you create a new transaction
 
++ Parameters
+    + domain (required, string, `private`) ... The domain used in the transaction
 
 + Request
 
@@ -978,9 +984,11 @@ Properties are basic type (number, string, boolean) or array of basic type
             "code" : "StatusNotSupported"
         }
 
-## SPONSORING
+# Group Sponsoring
 
-## PUT /v1/gamer/godfather/
+## God father [/v1/gamer/godfather]
+
+### Get sponsoring code [PUT]
 
 Obtains a code for sponsoring. The code is different for each game
 
@@ -996,10 +1004,11 @@ Obtains a code for sponsoring. The code is different for each game
 
         { "godfathercode" : "wSde2dF" }
 
-        
-## POST /v1/gamer/godfather
 
-Use to tell that the current user is the godchild of the godfather pass in the body.
+
+### Set godfather [POST]
+
+Set the godfather of the current user.
 
 + Request (application/json)
 
@@ -1012,7 +1021,7 @@ Use to tell that the current user is the godchild of the godfather pass in the b
     + Body
         
             {
-                "godfather": "wSde2dF",
+                "godfather": "wSde2dF"
             }
 
 + Response 200 (application/json)
@@ -1028,7 +1037,7 @@ Use to tell that the current user is the godchild of the godfather pass in the b
         }
 
 
-## GET /v1/gamer/godfather
+### Get godfather [GET]
 
 Retreive the godfather of the current user.
 
@@ -1046,9 +1055,10 @@ Retreive the godfather of the current user.
             "<gamer_id>" : "..."
         }
 
-## GET /v1/gamer/godchidren
 
-Get all the godchildren of the current user.
+### GET /v1/gamer/godchidren
+
+Get every godchildren for the current user.
 
 + Request (application/json)
 
@@ -1063,7 +1073,7 @@ Get all the godchildren of the current user.
         { 
             "godchildren" : [ { "gamer_id" : "..."}]
         }
-
+        
 # Group Scores and Leaderboards
 
 ## Scores
