@@ -662,6 +662,14 @@ In the case of an inventory, transactions will add or remove units from it.
 When used as a portfolio (for virtual currency), transactions add or remove units too.
 And feel free to invent new uses!
 
+## How domains work with transactions
+
+Transactions/portfolios/inventories can be shared between games with domains. The _private_ domain is private to the game
+but you can create other domains shared between games.
+
+This feature can be used to share a virtual currency between all your games, or to team up with other game developers
+to implement cross-marketing or any incentive...
+
 ## POST /v1/gamer/tx/{domain}
 
 A transaction is a Hash where the key is the unit, and the value is a positive (credit) or negative (debit) amount.
