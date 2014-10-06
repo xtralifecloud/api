@@ -1249,7 +1249,9 @@ Normally, you'd setup a loop to call `receive` and deliver messages to your game
 When a message is received, the HTTP status code is `200`. If it returns because of the timeout, the response code is `204`.
 
 To guarantee delivery, acknowledgement is necessary and by default, it's automatic (`?ack=auto`). 
-If you want to ack messages, pass `?ack=<messageId>` where `messageID` is the ID of the latest received message (use an empty string to bootstrap). 
+If you want to ack messages, pass `?ack=<messageId>` where `messageID` is the ID of the latest received message (use an empty string or `0` to bootstrap). 
+
+Choose if you want auto or acknowlegement as it can get hairy to mix both.
 
 + Parameters
     + domain (required, string, `private`) ... The domain
