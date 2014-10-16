@@ -537,7 +537,7 @@ You can store data easily. Simply send the data to be stored, as a JSON object, 
             "data" : "optional error data" 
         }  
 
-## Game VFS  [/v1/vfs/{domain}/{key}]
+## Game VFS  [/v1/vfs/{domain}/{key}{?binary}]
 
 Game VFS is a key-value store you can use to associate data with a game. 
 
@@ -600,6 +600,7 @@ You can store data easily. Simply send the data to be stored, as a JSON object, 
 + Parameters
     + domain (required, string, `private`) ... the domain where to store the key/value
     + key (required, string) ... the desired key
+    + binary (optional, string) use S3 storage
 
 + Request (application/json)
 
