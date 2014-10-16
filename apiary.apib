@@ -383,7 +383,7 @@ then the result will be
 
 # Group Key-Value Store
 
-## Gamer VFS  [/v1/gamer/vfs/{domain}/{key}]
+## Gamer VFS  [/v1/gamer/vfs/{domain}/{key}{?binary}]
 
 Gamer VFS is a key-value store you can use to associate data with a user. 
 
@@ -466,6 +466,7 @@ You can store data easily. Simply send the data to be stored, as a JSON object, 
 + Parameters
     + domain (required, string, `private`) ... the domain where to store the key/value
     + key (required, string) ... the desired key
+    + binary (optional, string) ... use S3 storage
 
 + Request (application/json)
 
@@ -483,7 +484,7 @@ You can store data easily. Simply send the data to be stored, as a JSON object, 
 
     + Body
     
-            1
+            {"done": 1}
 
 + Response 401 (application/json)
 
@@ -492,7 +493,29 @@ You can store data easily. Simply send the data to be stored, as a JSON object, 
             "message" : "the gamer token is no longer available, call signin!", 
             "data" : "optional error data" 
         }        
- 
+        
++ Request (application/json)
+
+    + parameters
+    
+            binary : true
+
+    + Headers
+    
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization : Basic gamer_id:gamer_secret
+            
++ Response 200 (application/json)
+
+    + Body
+    
+            {
+                "done": 1,
+                "getURL": url,
+                "putURL": url
+            }
+
     
 ### Remove gamer's data [DELETE]
 
@@ -537,7 +560,7 @@ You can store data easily. Simply send the data to be stored, as a JSON object, 
             "data" : "optional error data" 
         }  
 
-## Game VFS  [/v1/vfs/{domain}/{key}{?binary}]
+## Game VFS  [/v1/vfs/{domain}/{key}]
 
 Game VFS is a key-value store you can use to associate data with a game. 
 
@@ -600,7 +623,6 @@ You can store data easily. Simply send the data to be stored, as a JSON object, 
 + Parameters
     + domain (required, string, `private`) ... the domain where to store the key/value
     + key (required, string) ... the desired key
-    + binary (optional, string) use S3 storage
 
 + Request (application/json)
 
