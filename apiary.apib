@@ -461,7 +461,17 @@ but you can create other domains to share data between apps, or even between app
 
 You can store data easily. Simply send the data to be stored, as a JSON object, in the body of the request. Note that simple strings are not allowed. Arrays and objects are.
 
-**if key don't exist, they are created**
+**if the key doesn't exist, it's dynamically created**
+
+#### Optional Binary storage
+
+You can opt to store your data in Amazon S3 storage. It's the recommended option for values weighting more than 100ko.
+With the `binary` option, the API will reply with two URLs: one to upload the file to, and the other with the URL to access the value on the internet.
+
+So uploading a binary value becomes a two steps process: 
+- first call `PUT` to pre-authorize storage, 
+- then upload the contents directly to Amazon S3's preauthorized URL.
+- calling `GET` will then return the URL of the value on Amazon S3.
 
 + Parameters
     + domain (required, string, `private`) ... the domain where to store the key/value
