@@ -1311,3 +1311,117 @@ Choose if you want auto or acknowlegement as it can get hairy to mix both.
             }
 
 + Response 204
+
+# Group Achievements
+
+Clan of the Cloud provides functionality allowing to save the progress of the player and triggering Achievements, like on most popular platforms. This system is device independent and provides the tools required to notify Clan of the Cloud from progress and querying the status of achievements.
+
+Achievements share functionality with the Transaction system. This is because the key/value storage affected by transactions are used to trigger achievements.
+
+### GET /v1/gamer/achievements/{domain}
+
+#### List achievements
+
+Use this API to list the achievements available for your game, along with, for each of them, the progress of the gamer logged in.
+
++ Parameters
+    + domain (required, string, `private`) ... The domain, use `private` to return the default achievemens created for your game in the Front Office
+
++ Request (application/json)
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        {
+            "achievements": {
+                "highScore": {
+                    "type": "limit",
+                    "config": {
+                        "maxValue": 1000,
+                        "unit": "score"
+                    },
+                    "gameData": {
+                        "initiallyHidden": true
+                    },
+                    "gamerData": {
+                        "unhidden": true
+                    },
+                    "progress": 0.06
+                }
+            }
+        }
+
+## Custom information about an achievement [/v1/gamer/achievements/{domain}/{achievement}/gamerdata]
+
+### Set custom information about an achievement, for an user [POST]
+
+Use this API to set the custom data associated with a gamer for a given achievement. This data is associated between a gamer and an achievement, so you might for instance store data on how the achievement was performed.
+The whole achievement, as modified is returned.
+
++ Parameters
+    + domain (required, string, `private`) ... The domain, use `private` to return the default achievemens created for your game in the Front Office
+    + achievement (required, string) ... The name (identifier) of the achievement
+
++ Request (application/json)
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
+    + Body
+
+            {
+                "unhidden": true
+            }
+
++ Response 200 (application/json)
+
+        {
+            "achievement": {
+                "type": "limit",
+                "config": {
+                    "maxValue": 1000,
+                    "unit": "score"
+                },
+                "gameData": {
+                    "initiallyHidden": true
+                },
+                "gamerData": {
+                    "unhidden": true
+                },
+                "progress": 0.06
+            }
+        }
+
+### Extract custom information about an achievement [GET]
+
+Use this API to fetch the custom data associated with a gamer for a given achievement.
+
++ Parameters
+    + domain (required, string, `private`) ... The domain, use `private` to return the default achievemens created for your game in the Front Office
+    + achievement (required, string) ... The name (identifier) of the achievement
+
++ Request (application/json)
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        {
+            "gamerData": {
+                "unhidden": true
+            },
+        }
+
+
