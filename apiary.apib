@@ -703,7 +703,76 @@ but you can create other domains shared between games.
 This feature can be used to share a virtual currency between all your games, or to team up with other game developers
 to implement cross-marketing or any incentive...
 
+## POST /v2.2/gamer/tx/{domain}
+
+A transaction is a Hash where the key is the unit, and the value is a positive (credit) or negative (debit) amount.
+So a single transaction can both credit and debit different units.
+
++ Parameters
+    + domain (required, string, `private`) ... The domain used in the transaction
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
+    + Body
+        
+            {
+                transaction: { 
+                    "Gold": 100,
+                    "Silver": -2.5,
+                    "Arrows": 20
+                },
+                description: "This is an example transaction"
+            }
+
++ Response 200 
+
+        {
+            "balance": {
+                "Gold": 130,
+                "Silver": 0,
+                "Arrows": 20
+            },
+            "achievements": {
+                "achievementName":     {
+                    "type": "limit",
+                    "config": {
+                        "maxValue": 1000,
+                        "unit": "score"
+                    },
+                    "gameData": {
+                        "hidden": true
+                    },
+                    "progress": 1
+                }
+            }
+        }
+        
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
+    + Body
+        
+            {
+                "transaction": { "Gold": -1000000},
+                "description": "Excessive transaction"
+            }
+
++ Response 549
+
 ## POST /v1/gamer/tx/{domain}
+
+Note: this API is obsolete (please use the most recent version as documented above).
 
 A transaction is a Hash where the key is the unit, and the value is a positive (credit) or negative (debit) amount.
 So a single transaction can both credit and debit different units.
