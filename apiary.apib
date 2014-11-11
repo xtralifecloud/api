@@ -1118,7 +1118,7 @@ Obtains a code for sponsoring. The code is different for each game
 
 ### Set godfather [POST]
 
-Set the godfather of the current user.
+Set the godfather of the current user and give a reward to the godfather.
 
 + Request (application/json)
 
@@ -1131,13 +1131,23 @@ Set the godfather of the current user.
     + Body
         
             {
-                "godfather": "wSde2dF"
+                "godfather": "wSde2dF",
+                "options" : {
+                    "maturity" : 100,
+                    "rewards" : {
+                        transaction : { "gold" : 10},
+                        description : "this is a reward tx",
+                        domain : "private"
+                    }
+                }
             }
 
 + Response 200 (application/json)
 
         { 
-            "done" : 1
+            "done" : 1,
+            "balance" : {},
+            "achievements : {}
         }
 
 + Response 438 (application/json)
