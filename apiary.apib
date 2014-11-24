@@ -1358,8 +1358,9 @@ Normally, you'd setup a loop to call `receive` and deliver messages to your game
 `Receive` will block for a specified amount of time (with `?timeout=ms`) or 50 seconds (the default), and will be unblocked if a message is received, or if the call times out.
 When a message is received, the HTTP status code is `200`. If it returns because of the timeout, the response code is `204`.
 
-To guarantee delivery, acknowledgement is necessary and by default, it's automatic (`?ack=auto`). 
-If you want to ack messages, pass `?ack=<messageId>` where `messageID` is the ID of the latest received message (use an empty string or `0` to bootstrap). 
+To guarantee delivery, acknowledgement is necessary, but you can use automatic acknoledgement (`?ack=auto`). 
+If you want to ack messages, pass `?ack=<messageId>` where `messageID` is the ID of the latest received message. 
+If you don't specify an `?ack` parameter, the message is received with no ackowledgement (to bootstrap the loop).
 
 Choose if you want auto or acknowlegement as it can get hairy to mix both.
 
