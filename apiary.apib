@@ -1502,4 +1502,435 @@ Use this API to fetch the custom data associated with a gamer for a given achiev
             },
         }
 
+# Group Matches
+
+Clan of the Cloud provides a simple way to run matches between a set of gamers using on the network. The match system is designed around a centralized game state stored on Clan of the Cloud servers, with gamers participating to the match making a move, updating the global game state and notifying the other players on an asynchronous basis.
+
+This means that this match system is better suited to turn by turn game, rather than real time game such as an MMORPG, which may require a more sophisticated system handled on your servers.
+
+## POST /v1/gamer/matches
+
+Creates a new match, automatically attached to your gamer ID.
+
+### Description of a match
+
+|Field|Description|Value|
+|---|---|---|
+|creator|string| ID of the gamer who created the game (read only)
+|custom_properties|json| freeform JSON containing the user properties of the match
+|description|string| description of the game (non localized)
+|last_move_id|string| ID of the last move, which must be passed by any player who wishes to make a move (read only)
+|match_id|string| ID of the match, keep it safe to allow for joining it or fetching it later (read only)
+|max_players|number| maximum number of players who can join this game
+|moves|json| list of pending moves, cleared whenever a global_state is posted along with a move by one of the players (read only)
+|players|array| list of IDs of players participating to the match (read only)
+|status|string| either "running" (meaning that the match is running), either "finished" (meaning that nobody can join the match anymore) (read only)
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+    
+    + Body
+    
+            {
+                "godfather": "wSde2dF",
+                "maturity" : 100,
+                "reward" : {
+                    transaction : { "gold" : 10},
+                    description : "this is a reward tx",
+                    domain : "private"
+                }
+            }
+
++ Response 200 (application/json)
+
+        {
+            "match": {
+                "game_id": "541715e10476afa004fc3b82",
+                "status": "running",
+                "description": "Sample match for testing",
+                "custom_properties": {
+                    "type": "coop"
+                },
+                "max_players": 2,
+                "players": [
+                    "5474476a96af22405e619ebe"
+                ],
+                "global_state": {},
+                "last_move_id": 0,
+                "moves": [],
+                "match_id": "5474476a96af22405e619ec0"
+            }
+        }
+
+
+## GET /v1/gamer/matches{?properties}
+
+Lists the matches available for join, using a query to filter the results.
+
+### Filtering by properties
+
+Matches contain an user defined field named `custom_properties`, which can be used by developers to store and fetch additional details about a game. In the example of a card-based game, one of these properties could store the minimum bet. This information could also be used to help players to join games best suited to their willing. A filter is specified as an URL-encoded JSON containing attributes and the corresponding expected value. No comparison operators are available for now, now is it possible to customize the implementation : when there are more than one attributes, all conditions specified must be met in order for the match to qualify.
+
+The following will return the matches which have a property named type with value being "coop".
+`GET /v1/gamer/matches?properties={"type": "coop"}`
+
++ Parameters
+    + properties (required, string) ... a JSON string specifying the properties that need to be present in order to return a match. The JSON uses our filtering syntax (TODO Florian -- document syntax).
+
++ Request (application/json)
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        {
+            "matches": [
+                {
+                    "game_id": "541715e10476afa004fc3b82",
+                    "status": "running",
+                    "description": "Sample match for testing",
+                    "custom_properties": {
+                        "type": "coop"
+                    },
+                    "max_players": 2,
+                    "players": [
+                        "547447bce0d4d97c5ead8aad"
+                    ],
+                    "global_state": {},
+                    "last_move_id": 0,
+                    "moves": [],
+                    "match_id": "547447bde0d4d97c5ead8aaf"
+                }
+            ]
+        }
+
+## GET /v1/gamer/matches/{match_id}
+
+Fetches a given match. The response looks slightly different from that of a list of matches, but the data reported for the match is the same.
+
++ Parameters
+    + match_id (required, string) ... the ID of the match as previously returned.
+
++ Request (application/json)
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        {
+            "match": {
+                "game_id": "541715e10476afa004fc3b82",
+                "status": "running",
+                "description": "Sample match for testing",
+                "custom_properties": {
+                    "type": "coop"
+                },
+                "max_players": 2,
+                "players": [
+                    "547447e92e9dca9d5ef11559"
+                ],
+                "global_state": {},
+                "last_move_id": 0,
+                "moves": [],
+                "match_id": "547447e92e9dca9d5ef1155b"
+            }
+        }
+
++ Response 404 (application/json)
+
+        {
+            "name": "InvalidMatch",
+            "message": "The match does not exist",
+            "status": 404
+        }
+
+
+## GET /v1/gamer/matches/participating
+
+Lists the matches to which you are participating.
+
++ Request (application/json)
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        {
+            "matches": [
+                {
+                    "game_id": "541715e10476afa004fc3b82",
+                    "status": "running",
+                    "description": "Sample match for testing",
+                    "custom_properties": {
+                        "type": "coop"
+                    },
+                    "max_players": 2,
+                    "players": [
+                        "54744826540942cc5e281935"
+                    ],
+                    "global_state": {},
+                    "last_move_id": 0,
+                    "moves": [],
+                    "match_id": "54744826540942cc5e281937"
+                },
+                {
+                    "game_id": "541715e10476afa004fc3b82",
+                    "status": "running",
+                    "description": "Another sample match",
+                    "custom_properties": {
+                        "type": "versus"
+                    },
+                    "max_players": 1,
+                    "players": [
+                        "54744826540942cc5e281935"
+                    ],
+                    "global_state": {},
+                    "last_move_id": 0,
+                    "moves": [],
+                    "match_id": "54744826540942cc5e281938"
+                }
+            ]
+        }
+
+## POST /v1/gamer/matches/{id}/join
+
+Join an existing match.
+
++ Request (application/json)
+
+    + Parameters
+        + match_id (required, string) ... the ID of the match to join.
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        {
+            "match": {
+                "game_id": "541715e10476afa004fc3b82",
+                "status": "running",
+                "description": "Sample match for testing",
+                "custom_properties": {
+                    "type": "coop"
+                },
+                "max_players": 3,
+                "players": [
+                    "54744d9fad0f8b6b62e3b589",
+                    "54744d9fad0f8b6b62e3b58a"
+                ],
+                "global_state": {},
+                "last_move_id": 0,
+                "moves": [],
+                "match_id": "54744d9fad0f8b6b62e3b58b"
+            }
+        }
+
++ Response 404 (application/json)
+
+        {
+            "name": "InvalidMatch",
+            "message": "The match does not exist",
+            "status": 404
+        }
+
++ Response 431 (application/json)
+
+        {
+            "name": "AlreadyJoinedMatch",
+            "message": "You are already being part of this match"
+        }
+
++ Response 431 (application/json)
+
+        {
+            "name": "MaximumNumberOfPlayersReached",
+            "message": "This match can not accept any additional player"
+        }
+
++ Response 433 (application/json)
+
+        {
+            "name": "BadMatchID",
+            "message": "This match does not exist or is not active"
+        }
+
+## POST /v1/gamer/matches/{id}/leave
+
+Leave a match. You need to have joined before that.
+
++ Request (application/json)
+
+    + Parameters
+        + match_id (required, string) ... the ID of the match to operate on.
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        {
+            "match": {
+                "custom_properties": {
+                    "type": "coop"
+                },
+                "description": "Sample match for testing",
+                "game_id": "541715e10476afa004fc3b82",
+                "global_state": {
+                    "full": 1,
+                    "score": 200
+                },
+                "last_move_id": "547452e24a0bd3d1656deb59",
+                "match_id": "547452e227a434d1657f8cad",
+                "max_players": 3,
+                "moves": [
+                    {
+                        "data": {
+                            "thrown": "third_dice"
+                        },
+                        "move_id": "547452e24a0bd3d1656deb59",
+                        "player_id": "547452e227a434d1657f8cab"
+                    }
+                ],
+                "players": [
+                    "547452e227a434d1657f8cab"
+                ],
+                "status": "finished"
+            }
+        }
+
++ Response 404 (application/json)
+
+        {
+            "name": "InvalidMatch",
+            "message": "The match does not exist",
+            "status": 404
+        }
+
++ Response 433 (application/json)
+
+        {
+            "name": "BadMatchID",
+            "message": "This match does not exist or is not active"
+        }
+
+## POST /v1/gamer/matches/{id}/move{?last_move_id}
+
+Posts a move. This will notify a progress in the match. Note that the `global_state` is updated incrementally, according to the passed attributes. This means that attributes not passed do not get modified or deleted from the `global_state` stored for this game.
+
+### Making moves
+
+Once a match has been started, any player currently belonging to the game is allowed to make moves. It is up to the game itself to determine which players may play and when.
+
+However, one is only allowed to post a move if he is synchronized with the current state of the game. This is done with a parameter named `last_move_id`. Every move made by one of the players, this value changes and is returned in the message posted to the other players. The next player must post this value along with his next move, else he will receive an error indicating that he needs to be resynchronized.
+
+A move is made of a `move` object (which is basically freeform, and represents a message that will be sent to other players indicating what changed) and an optional game state labelled `global_state`. A global game state sould be enough for any player who joins the game to restore the game locally. Thus, when a global state is posted, the list of moves is cleared on the server: only the moves made since the last global state are kept and posted to people who join the game. As such, one can reconstruct the current game by starting from the global state and applying the pending moves.
+
+When a move is posted, all players get notified in the form of an event, taking the following form:
+
+    {
+        "type": "move",
+        "event": {
+            "move": {
+                "player_id": "54748855e7a4e69a89d59587",
+                "move_id": "54748856cbedae9a890be8b1",
+                "data": {"property", "that was found in the move"}
+            },
+            "global_state": {"global", "game_state"}
+        },
+        "id": "4055cd81-66a4-42f7-bcbb-42b9a8bc870e"
+    }
+
++ Request (application/json)
+
+    + Parameters
+        + last_move_id (required, string) ... the ID of the last move, as received in the body of the match received when joining, or the value received in the last event. Allows to make sure that you are synchronized with the match before making a move.
+        + match_id (required, string) ... the ID of the match to operate on.
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
+    + Body
+        
+            {
+                "move": {
+                    "what": "changed"
+                },
+                "global_state": {
+                    "full": "game_state"
+                }
+            }
+
++ Response 200 (application/json)
+
+        {
+            "match": {
+                "custom_properties": {
+                    "type": "coop"
+                },
+                "description": "Sample match for testing",
+                "game_id": "541715e10476afa004fc3b82",
+                "global_state": {
+                    "full": 1,
+                    "score": 200
+                },
+                "last_move_id": "547452e24a0bd3d1656deb59",
+                "match_id": "547452e227a434d1657f8cad",
+                "max_players": 3,
+                "moves": [
+                    {
+                        "data": {
+                            "thrown": "third_dice"
+                        },
+                        "move_id": "547452e24a0bd3d1656deb59",
+                        "player_id": "547452e227a434d1657f8cab"
+                    }
+                ],
+                "players": [
+                    "547452e227a434d1657f8cab"
+                ],
+                "status": "finished"
+            }
+        }
+
++ Response 400 (application/json)
+
+        {
+            "name": "MissingParameter",
+            "message": "The parameter is invalid or absent: last_move_id",
+            "status": 400
+        }
+
++ Response 431 (application/json)
+
+        {
+            "name": "InvalidLastMoveId",
+            "message": "This move ID is invalid, please resynchronize"
+        }
 
