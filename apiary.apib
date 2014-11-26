@@ -824,7 +824,42 @@ So a single transaction can both credit and debit different units.
 
 + Response 549
 
+## GET /v2.4/gamer/tx/{domain}{?unit}{&skip}{&limit}
+
+Use this API to list the transactions of the current gamer. You can specify an optional
+`?unit=xxx` parameter where `xxx` is the unit (Silver, Gold or Arrows in our example). If
+`unit` is specified, the result will only contain transactions about this unit.
+Use `?skip` and `?limit` to page through transactions.
+
+Note: the `count` returned is the total number of transactions (useful whith paging)
+
++ Parameters
+    + domain (required, string, `private`) ... The domain used in the transaction
+    + unit (optional, string, `Gold`) ... To restrict the history to a single Unit
+    + skip (optional, number, `30`) ... The number of rows to skip
+    + limit (optional, number, `10`) ... The number of rows to return
+
++ Request
+
+    + Headers
+    
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json; charset=utf-8)
+
+        {   "history" : [
+            { "ts": "2014-08-27T16:44:17.796Z", "tx": { "Gold": 100 }, "desc": "jsclient test" },
+            { "ts": "2014-08-27T16:02:22.645Z", "tx": { "Gold": -100, "Silver": 1 }, "desc": "jsclient test" },
+            { "ts": "2014-08-27T16:02:22.371Z", "tx": { "Gold": 100 }, "desc": "jsclient test" }
+            ],
+            "count": 3
+        }
+
 ## GET /v1/gamer/tx/{domain}{?unit}
+
+Note: this API is obsolete (please use the most recent version below).
 
 Use this API to list the transactions that took place for this gamer. You can specify an optional
 `?unit=xxx` parameter where `xxx` is the unit (Silver, Gold or Arrows in our example). If
