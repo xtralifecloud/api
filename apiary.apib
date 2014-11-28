@@ -1746,6 +1746,56 @@ Lists the matches to which you are participating.
 
 Join an existing match.
 
+### Events related to matches
+
+Any player who has joined the match will automatically receive events indicating changes made to the match. These events happen when a player joins the match, leaves it or posts a move.
+
+These events must be processed by each player prior to issuing additional commands. To do so, there is a parameter, called `last_event_id` that is required on some resources and must be set to the ID of the last event from the match. Among other things, this allows to detect race conditions and guarantee the integrity of the game.
+
+This last event comes in two forms: either as a result of a match operation (in which case you can simply pick the `last_event_id` field within the server response) if you were the one initating it, or as the `event._id` field of the last received event.
+
+In case a player joins the match, the following event will be received by other players:
+
+    {
+        "type": "match.join",
+        "event": {
+            "_id": "54784ca6e771a80000938fc4",
+            "player_joined": [
+                "54784ca6c2ab39000030304e"
+            ],
+            "match_id": "54784ca6c2ab39000030304f"
+        },
+        "id": "f8044fbb-40e4-4bc0-b890-dc8d5c604935"
+    }
+
+In case a player leaves the match, similarly the following event will be received by others:
+
+    {
+        "type": "match.leave",
+        "event": {
+            "_id": "54784d07a0fcf2000086457e",
+            "player_left": [
+                "54784d06f10c190000cb96e2"
+            ],
+            "match_id": "54784d07f10c190000cb96e3"
+        },
+        "id": "2a967540-9cc6-4056-ac67-c0be82b5ce69"
+    }
+
+In case the match is marked as finished, the following event will be broadcasted to all players except the one who initiated it.
+
+    {
+        "type": "match.finish",
+        "event": {
+            "_id": "54784d07a0fcf2000086457d",
+            "finished": 1,
+            "match_id": "54784d07f10c190000cb96e3"
+        },
+        "id": "d2f908d1-40d8-4f73-802e-fe0086bb6cd5"
+    }
+
+Events are broadcasted in other situations, such as moves, but they are described within the related call documentation.
+
 + Request (application/json)
 
     + Parameters
@@ -1868,25 +1918,25 @@ This only works if you are currently part of the match, or you will get an HTTP 
 
 Once a match has been started, any player currently belonging to the game is allowed to make moves. It is up to the game itself to determine which players may play and when.
 
-However, one is only allowed to post a move if he is synchronized with the current state of the game. This is done with a parameter named `last_move_id`. Every move made by one of the players, this value changes and is returned in the message posted to the other players. The next player must post this value along with his next move, else he will receive an error indicating that he needs to be resynchronized.
+However, one is only allowed to post a move if he is synchronized with the current state of the game. This is done with a parameter named `last_event_id`. Every move made by one of the players, this value changes and is returned in the message posted to the other players. The next player must post this value along with his next move, else he will receive an error indicating that he needs to be resynchronized.
 
 A move is made of a `move` object (which is basically freeform, and represents a message that will be sent to other players indicating what changed) and an optional game state labelled `global_state`. A global game state sould be enough for any player who joins the game to restore the game locally. Thus, when a global state is posted, the list of moves is cleared on the server: only the moves made since the last global state are kept and posted to people who join the game. As such, one can reconstruct the current game by starting from the global state and applying the pending moves.
 
-When a move is posted, all players get notified in the form of an event, taking the following form:
+When a move is posted, all players get notified in the form of an event, looking as follows:
 
     {
-        "type": "match.move",
-        "event": {
-            "_id": "54784176a8df72000049340e",
-            "player_id": "547841755e4cfe0000bf6907",
-            "move": {
-                "what": "changed"
-            },
-            "global_state": {
-                "full": "game_state"
-            }
-        },
-        "id": "d0fb71c1-3cd0-4bbd-a9ec-29cb46cf9203"
+        "type": "match.move",
+        "event": {
+            "_id": "54784176a8df72000049340e",
+            "player_id": "547841755e4cfe0000bf6907",
+            "move": {
+                "what": "changed"
+            },
+            "global_state": {
+                "full": "game_state"
+            }
+        },
+        "id": "d0fb71c1-3cd0-4bbd-a9ec-29cb46cf9203"
     }
 
 + Request (application/json)
@@ -1915,40 +1965,40 @@ When a move is posted, all players get notified in the form of an event, taking 
 + Response 200 (application/json)
 
         {
-            "match": {
-                "game_id": "545a05d2fd2e2eab09077615",
-                "match_id": "547841765e4cfe0000bf6909",
-                "creator": "547841755e4cfe0000bf6907",
-                "status": "running",
-                "description": "Sample match for testing",
-                "custom_properties": {
-                    "type": "coop"
-                },
-                "max_players": 3,
-                "players": [
-                    "547841755e4cfe0000bf6907",
-                    "547841765e4cfe0000bf6908"
-                ],
-                "last_event_id": "54784176a8df72000049340e",
-                "events": [
-                    {
-                        "type": "match.move",
-                        "event": {
-                            "_id": "54784176a8df72000049340e",
-                            "player_id": "547841755e4cfe0000bf6907",
-                            "move": {
-                                "what": "changed"
-                            },
-                            "global_state": {
-                                "full": "game_state"
-                            }
-                        }
-                    }
-                ],
-                "global_state": {
-                    "full": 1
-                }
-            }
+            "match": {
+                "game_id": "545a05d2fd2e2eab09077615",
+                "match_id": "547841765e4cfe0000bf6909",
+                "creator": "547841755e4cfe0000bf6907",
+                "status": "running",
+                "description": "Sample match for testing",
+                "custom_properties": {
+                    "type": "coop"
+                },
+                "max_players": 3,
+                "players": [
+                    "547841755e4cfe0000bf6907",
+                    "547841765e4cfe0000bf6908"
+                ],
+                "last_event_id": "54784176a8df72000049340e",
+                "events": [
+                    {
+                        "type": "match.move",
+                        "event": {
+                            "_id": "54784176a8df72000049340e",
+                            "player_id": "547841755e4cfe0000bf6907",
+                            "move": {
+                                "what": "changed"
+                            },
+                            "global_state": {
+                                "full": "game_state"
+                            }
+                        }
+                    }
+                ],
+                "global_state": {
+                    "full": 1
+                }
+            }
         }
 
 + Response 400 (application/json)
@@ -1987,27 +2037,27 @@ This only works if you are currently part of the match, or you will get an HTTP 
 + Response 200 (application/json)
 
         {
-            "match": {
-                "game_id": "545a05d2fd2e2eab09077615",
-                "creator": "547844691f4ee7000061c6db",
-                "status": "finished",
-                "description": "Sample match for testing",
-                "custom_properties": {
-                    "type": "coop"
-                },
-                "max_players": 3,
-                "players": [
-                    "547844691f4ee7000061c6db",
-                    "547844691f4ee7000061c6dc"
-                ],
-                "global_state": {
-                    "full": 1,
-                    "score": 200
-                },
-                "last_event_id": "5478446ae5d9ea00003f1a9c",
-                "events": [],
-                "match_id": "547844691f4ee7000061c6dd"
-            }
+            "match": {
+                "game_id": "545a05d2fd2e2eab09077615",
+                "creator": "547844691f4ee7000061c6db",
+                "status": "finished",
+                "description": "Sample match for testing",
+                "custom_properties": {
+                    "type": "coop"
+                },
+                "max_players": 3,
+                "players": [
+                    "547844691f4ee7000061c6db",
+                    "547844691f4ee7000061c6dc"
+                ],
+                "global_state": {
+                    "full": 1,
+                    "score": 200
+                },
+                "last_event_id": "5478446ae5d9ea00003f1a9c",
+                "events": [],
+                "match_id": "547844691f4ee7000061c6dd"
+            }
         }
 
 + Response 404 (application/json)
@@ -2050,6 +2100,6 @@ Deletes a match, erasing it along with its history. You need to be the creator o
 + Response 431 (application/json)
 
         {
-            "name": "MatchNotFinished",
-            "message": "This match needs to be finished in order to perform this operation"
+            "name": "MatchNotFinished",
+            "message": "This match needs to be finished in order to perform this operation"
         }
