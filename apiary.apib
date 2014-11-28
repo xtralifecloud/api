@@ -1595,7 +1595,7 @@ Creates a new match, automatically attached to your gamer ID.
                 ],
                 "global_state": {},
                 "last_move_id": 0,
-                "moves": [],
+                "events": [],
                 "match_id": "5474476a96af22405e619ec0"
             }
         }
@@ -1640,7 +1640,7 @@ The following will return the matches which have a property named type with valu
                     ],
                     "global_state": {},
                     "last_move_id": 0,
-                    "moves": [],
+                    "events": [],
                     "match_id": "547447bde0d4d97c5ead8aaf"
                 }
             ]
@@ -1677,7 +1677,7 @@ Fetches a given match. The response looks slightly different from that of a list
                 ],
                 "global_state": {},
                 "last_move_id": 0,
-                "moves": [],
+                "events": [],
                 "match_id": "547447e92e9dca9d5ef1155b"
             }
         }
@@ -1720,7 +1720,7 @@ Lists the matches to which you are participating.
                     ],
                     "global_state": {},
                     "last_move_id": 0,
-                    "moves": [],
+                    "events": [],
                     "match_id": "54744826540942cc5e281937"
                 },
                 {
@@ -1736,7 +1736,7 @@ Lists the matches to which you are participating.
                     ],
                     "global_state": {},
                     "last_move_id": 0,
-                    "moves": [],
+                    "events": [],
                     "match_id": "54744826540942cc5e281938"
                 }
             ]
@@ -1774,7 +1774,7 @@ Join an existing match.
                 ],
                 "global_state": {},
                 "last_move_id": 0,
-                "moves": [],
+                "events": [],
                 "match_id": "54744d9fad0f8b6b62e3b58b"
             }
         }
@@ -1810,7 +1810,7 @@ Join an existing match.
 
 ## POST /v1/gamer/matches/{id}/leave
 
-Leave a match. You need to have joined before that.
+Leave a match. This only works if you are currently part of the match, or you will get an HTTP 433.
 
 + Request (application/json)
 
@@ -1839,18 +1839,7 @@ Leave a match. You need to have joined before that.
                 "last_move_id": "547452e24a0bd3d1656deb59",
                 "match_id": "547452e227a434d1657f8cad",
                 "max_players": 3,
-                "moves": [
-                    {
-                        "data": {
-                            "thrown": "third_dice"
-                        },
-                        "move_id": "547452e24a0bd3d1656deb59",
-                        "player_id": "547452e227a434d1657f8cab"
-                    }
-                ],
-                "players": [
-                    "547452e227a434d1657f8cab"
-                ],
+                "events": [],
                 "status": "finished"
             }
         }
@@ -1873,6 +1862,7 @@ Leave a match. You need to have joined before that.
 ## POST /v1/gamer/matches/{id}/move{?last_move_id}
 
 Posts a move. This will notify a progress in the match. Note that the `global_state` is updated incrementally, according to the passed attributes. This means that attributes not passed do not get modified or deleted from the `global_state` stored for this game.
+This only works if you are currently part of the match, or you will get an HTTP 433.
 
 ### Making moves
 
@@ -1885,16 +1875,18 @@ A move is made of a `move` object (which is basically freeform, and represents a
 When a move is posted, all players get notified in the form of an event, taking the following form:
 
     {
-        "type": "move",
-        "event": {
-            "move": {
-                "player_id": "54748855e7a4e69a89d59587",
-                "move_id": "54748856cbedae9a890be8b1",
-                "data": {"property", "that was found in the move"}
-            },
-            "global_state": {"global", "game_state"}
-        },
-        "id": "4055cd81-66a4-42f7-bcbb-42b9a8bc870e"
+        "type": "match.move",
+        "event": {
+            "_id": "54784176a8df72000049340e",
+            "player_id": "547841755e4cfe0000bf6907",
+            "move": {
+                "what": "changed"
+            },
+            "global_state": {
+                "full": "game_state"
+            }
+        },
+        "id": "d0fb71c1-3cd0-4bbd-a9ec-29cb46cf9203"
     }
 
 + Request (application/json)
@@ -1923,33 +1915,40 @@ When a move is posted, all players get notified in the form of an event, taking 
 + Response 200 (application/json)
 
         {
-            "match": {
-                "custom_properties": {
-                    "type": "coop"
-                },
-                "description": "Sample match for testing",
-                "game_id": "541715e10476afa004fc3b82",
-                "global_state": {
-                    "full": 1,
-                    "score": 200
-                },
-                "last_move_id": "547452e24a0bd3d1656deb59",
-                "match_id": "547452e227a434d1657f8cad",
-                "max_players": 3,
-                "moves": [
-                    {
-                        "data": {
-                            "thrown": "third_dice"
-                        },
-                        "move_id": "547452e24a0bd3d1656deb59",
-                        "player_id": "547452e227a434d1657f8cab"
-                    }
-                ],
-                "players": [
-                    "547452e227a434d1657f8cab"
-                ],
-                "status": "finished"
-            }
+            "match": {
+                "game_id": "545a05d2fd2e2eab09077615",
+                "match_id": "547841765e4cfe0000bf6909",
+                "creator": "547841755e4cfe0000bf6907",
+                "status": "running",
+                "description": "Sample match for testing",
+                "custom_properties": {
+                    "type": "coop"
+                },
+                "max_players": 3,
+                "players": [
+                    "547841755e4cfe0000bf6907",
+                    "547841765e4cfe0000bf6908"
+                ],
+                "last_event_id": "54784176a8df72000049340e",
+                "events": [
+                    {
+                        "type": "match.move",
+                        "event": {
+                            "_id": "54784176a8df72000049340e",
+                            "player_id": "547841755e4cfe0000bf6907",
+                            "move": {
+                                "what": "changed"
+                            },
+                            "global_state": {
+                                "full": "game_state"
+                            }
+                        }
+                    }
+                ],
+                "global_state": {
+                    "full": 1
+                }
+            }
         }
 
 + Response 400 (application/json)
@@ -1967,3 +1966,90 @@ When a move is posted, all players get notified in the form of an event, taking 
             "message": "This move ID is invalid, please resynchronize"
         }
 
+
+## POST /v1/gamer/matches/{id}/finish{?last_move_id}
+
+Marks a match as finished, meaning that no other player will be able to join, post moves or even leave the match: consider it frozen and "archived" after this operation.
+This only works if you are currently part of the match, or you will get an HTTP 433.
+
++ Request (application/json)
+
+    + Parameters
+        + last_move_id (required, string) ... the ID of the last move, as received in the body of the match received when joining, or the value received in the last event. Allows to make sure that you are synchronized with the match before making a move.
+        + match_id (required, string) ... the ID of the match to operate on.
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        {
+            "match": {
+                "game_id": "545a05d2fd2e2eab09077615",
+                "creator": "547844691f4ee7000061c6db",
+                "status": "finished",
+                "description": "Sample match for testing",
+                "custom_properties": {
+                    "type": "coop"
+                },
+                "max_players": 3,
+                "players": [
+                    "547844691f4ee7000061c6db",
+                    "547844691f4ee7000061c6dc"
+                ],
+                "global_state": {
+                    "full": 1,
+                    "score": 200
+                },
+                "last_event_id": "5478446ae5d9ea00003f1a9c",
+                "events": [],
+                "match_id": "547844691f4ee7000061c6dd"
+            }
+        }
+
++ Response 404 (application/json)
+
+        {
+            "name": "InvalidMatch",
+            "message": "The match does not exist",
+            "status": 404
+        }
+
++ Response 433 (application/json)
+
+        {
+            "name": "BadMatchID",
+            "message": "This match does not exist or is not active"
+        }
+
+
+## DELETE /v1/gamer/matches/{match_id}
+
+Deletes a match, erasing it along with its history. You need to be the creator of the match to perform this operation.
+
++ Parameters
+    + match_id (required, string) ... the ID of the match to delete.
+
++ Request (application/json)
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        {
+            "done": 1
+        }
+
++ Response 431 (application/json)
+
+        {
+            "name": "MatchNotFinished",
+            "message": "This match needs to be finished in order to perform this operation"
+        }
