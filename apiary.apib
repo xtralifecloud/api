@@ -1554,7 +1554,7 @@ Creates a new match, automatically attached to your gamer ID.
 |creator|string| ID of the gamer who created the game (read only)
 |custom_properties|json| freeform JSON containing the user properties of the match
 |description|string| description of the game (non localized)
-|last_move_id|string| ID of the last move, which must be passed by any player who wishes to make a move (read only)
+|last_event_id|string| ID of the last event, which must be passed by any player who wishes to make a move (read only)
 |match_id|string| ID of the match, keep it safe to allow for joining it or fetching it later (read only)
 |max_players|number| maximum number of players who can join this game
 |moves|json| list of pending moves, cleared whenever a global_state is posted along with a move by one of the players (read only)
@@ -1594,7 +1594,7 @@ Creates a new match, automatically attached to your gamer ID.
                     "5474476a96af22405e619ebe"
                 ],
                 "global_state": {},
-                "last_move_id": 0,
+                "last_event_id": 0,
                 "events": [],
                 "match_id": "5474476a96af22405e619ec0"
             }
@@ -1639,7 +1639,7 @@ The following will return the matches which have a property named type with valu
                         "547447bce0d4d97c5ead8aad"
                     ],
                     "global_state": {},
-                    "last_move_id": 0,
+                    "last_event_id": 0,
                     "events": [],
                     "match_id": "547447bde0d4d97c5ead8aaf"
                 }
@@ -1676,7 +1676,7 @@ Fetches a given match. The response looks slightly different from that of a list
                     "547447e92e9dca9d5ef11559"
                 ],
                 "global_state": {},
-                "last_move_id": 0,
+                "last_event_id": 0,
                 "events": [],
                 "match_id": "547447e92e9dca9d5ef1155b"
             }
@@ -1719,7 +1719,7 @@ Lists the matches to which you are participating.
                         "54744826540942cc5e281935"
                     ],
                     "global_state": {},
-                    "last_move_id": 0,
+                    "last_event_id": 0,
                     "events": [],
                     "match_id": "54744826540942cc5e281937"
                 },
@@ -1735,7 +1735,7 @@ Lists the matches to which you are participating.
                         "54744826540942cc5e281935"
                     ],
                     "global_state": {},
-                    "last_move_id": 0,
+                    "last_event_id": 0,
                     "events": [],
                     "match_id": "54744826540942cc5e281938"
                 }
@@ -1823,7 +1823,7 @@ Events are broadcasted in other situations, such as moves, but they are describe
                     "54744d9fad0f8b6b62e3b58a"
                 ],
                 "global_state": {},
-                "last_move_id": 0,
+                "last_event_id": 0,
                 "events": [],
                 "match_id": "54744d9fad0f8b6b62e3b58b"
             }
@@ -1886,7 +1886,7 @@ Leave a match. This only works if you are currently part of the match, or you wi
                     "full": 1,
                     "score": 200
                 },
-                "last_move_id": "547452e24a0bd3d1656deb59",
+                "last_event_id": "547452e24a0bd3d1656deb59",
                 "match_id": "547452e227a434d1657f8cad",
                 "max_players": 3,
                 "events": [],
@@ -1909,7 +1909,7 @@ Leave a match. This only works if you are currently part of the match, or you wi
             "message": "This match does not exist or is not active"
         }
 
-## POST /v1/gamer/matches/{id}/move{?last_move_id}
+## POST /v1/gamer/matches/{id}/move{?last_event_id}
 
 Posts a move. This will notify a progress in the match. Note that the `global_state` is updated incrementally, according to the passed attributes. This means that attributes not passed do not get modified or deleted from the `global_state` stored for this game.
 This only works if you are currently part of the match, or you will get an HTTP 433.
@@ -1942,7 +1942,7 @@ When a move is posted, all players get notified in the form of an event, looking
 + Request (application/json)
 
     + Parameters
-        + last_move_id (required, string) ... the ID of the last move, as received in the body of the match received when joining, or the value received in the last event. Allows to make sure that you are synchronized with the match before making a move.
+        + last_event_id (required, string) ... the ID of the last move, as received in the body of the match received when joining, or the value received in the last event. Allows to make sure that you are synchronized with the match before making a move.
         + match_id (required, string) ... the ID of the match to operate on.
 
     + Headers
@@ -2005,7 +2005,7 @@ When a move is posted, all players get notified in the form of an event, looking
 
         {
             "name": "MissingParameter",
-            "message": "The parameter is invalid or absent: last_move_id",
+            "message": "The parameter is invalid or absent: last_event_id",
             "status": 400
         }
 
@@ -2017,7 +2017,7 @@ When a move is posted, all players get notified in the form of an event, looking
         }
 
 
-## POST /v1/gamer/matches/{id}/finish{?last_move_id}
+## POST /v1/gamer/matches/{id}/finish{?last_event_id}
 
 Marks a match as finished, meaning that no other player will be able to join, post moves or even leave the match: consider it frozen and "archived" after this operation.
 This only works if you are currently part of the match, or you will get an HTTP 433.
@@ -2025,7 +2025,7 @@ This only works if you are currently part of the match, or you will get an HTTP 
 + Request (application/json)
 
     + Parameters
-        + last_move_id (required, string) ... the ID of the last move, as received in the body of the match received when joining, or the value received in the last event. Allows to make sure that you are synchronized with the match before making a move.
+        + last_event_id (required, string) ... the ID of the last move, as received in the body of the match received when joining, or the value received in the last event. Allows to make sure that you are synchronized with the match before making a move.
         + match_id (required, string) ... the ID of the match to operate on.
 
     + Headers
