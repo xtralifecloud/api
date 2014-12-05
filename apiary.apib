@@ -1615,6 +1615,8 @@ The following will return the matches which have a property named type with valu
 
 + Parameters
     + properties (required, string) ... a JSON string specifying the properties that need to be present in order to return a match. The JSON uses the filtering syntax as documented above.
+    + limit (optional, number) ... the maximum number of matches to return. Used for pagination. Defaults to 30.
+    + skip (optional, number) ... the index of the first item to return. Used for pagination. Zero-based, defaults to 0.
 
 + Request (application/json)
 
@@ -1644,7 +1646,8 @@ The following will return the matches which have a property named type with valu
                     "lastEventId": 0,
                     "events": []
                 }
-            ]
+            ],
+            "count": 1
         }
 
 ## GET /v1/gamer/matches/{match_id}
