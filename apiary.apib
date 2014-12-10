@@ -1748,29 +1748,41 @@ This last event comes in two forms: either as a result of a match operation (in 
 In case a player joins the match, the following event will be received by other players:
 
     {
-        "type": "match.join",
         "event": {
-            "_id": "54784ca6e771a80000938fc4",
-            "player_joined": [
-                "54784ca6c2ab39000030304e"
-            ],
-            "match_id": "54784ca6c2ab39000030304f"
+            "_id": "548866edba0ec600005e1941",
+            "match_id": "548866ed74c2e0000098db95",
+            "playersJoined": [
+                {
+                    "gamer_id": "548866ed74c2e0000098db94",
+                    "profile": {
+                        "displayName": "Guest",
+                        "lang": "en"
+                    }
+                }
+            ]
         },
-        "id": "f8044fbb-40e4-4bc0-b890-dc8d5c604935"
+        "id": "9155987d-6322-46d4-9403-e90ab4ba5fa3",
+        "type": "match.join"
     }
 
 In case a player leaves the match, similarly the following event will be received by others:
 
     {
-        "type": "match.leave",
         "event": {
-            "_id": "54784d07a0fcf2000086457e",
-            "player_left": [
-                "54784d06f10c190000cb96e2"
-            ],
-            "match_id": "54784d07f10c190000cb96e3"
+            "_id": "548866eeba0ec600005e1948",
+            "match_id": "548866ed74c2e0000098db95",
+            "playersLeft": [
+                {
+                    "gamer_id": "548866ed74c2e0000098db94",
+                    "profile": {
+                        "displayName": "Guest",
+                        "lang": "en"
+                    }
+                }
+            ]
         },
-        "id": "2a967540-9cc6-4056-ac67-c0be82b5ce69"
+        "id": "5007fd0a-1365-4e87-aba8-5d916731e684",
+        "type": "match.leave"
     }
 
 In case the match is marked as finished, the following event will be broadcasted to all players except the one who initiated it.
