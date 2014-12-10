@@ -1545,7 +1545,7 @@ This means that this match system is better suited to turn by turn game, rather 
 
 ## POST /v1/gamer/matches
 
-Creates a new match, automatically attached to your gamer ID.
+Creates a new match, automatically attached to your gamer ID. Only the `maxPlayers` node is required.
 
 ### Description of a match
 
@@ -1553,7 +1553,7 @@ Creates a new match, automatically attached to your gamer ID.
 |---|---|---|
 |_id|string| ID of the match, keep it safe to allow for joining it or fetching it later (read only)
 |creator|string| ID of the gamer who created the game (read only)
-|customProperties|json| freeform JSON containing the user properties of the match
+|customProperties|json| JSON containing the user properties of the match (only one level, with numbers or strings as values)
 |description|string| description of the game (non localized)
 |globalState|json| global state of the match, which may be used to reconstruct the game locally (read only)
 |lastEventId|string| ID of the last event, which must be passed by any player who wishes to make a move (read only)
@@ -1561,6 +1561,8 @@ Creates a new match, automatically attached to your gamer ID.
 |events|json| list of pending events, cleared whenever a globalState is posted along with a move by one of the players (read only)
 |players|array| list of IDs of players participating to the match (read only)
 |status|string| either "running" (meaning that the match is running), either "finished" (meaning that nobody can join the match anymore) (read only)
+
+The response of most calls only include basic properties. To get all properties, including the global state and event list, you must either create, join or fetch a single match.
 
 + Request (application/json)
 
@@ -1577,6 +1579,9 @@ Creates a new match, automatically attached to your gamer ID.
                 "maxPlayers": 3
                 "customProperties": {
                     "type": "coop"
+                },
+                "globalState": {
+                    "startup": "globalState"
                 }
             }
 
@@ -1584,25 +1589,39 @@ Creates a new match, automatically attached to your gamer ID.
 
         {
             "match": {
-                "_id": "5474476a96af22405e619ec0",
-                "game_id": "541715e10476afa004fc3b82",
-                "status": "running",
-                "description": "Sample match for testing",
+                "_id": "548723f78e2af1fbc5cc326d",
+                "creator": {
+                    "gamer_id": "548723f78e2af1fbc5cc326b",
+                    "profile": {
+                        "displayName": "Guest",
+                        "lang": "en"
+                    }
+                },
                 "customProperties": {
+                    "other": "property",
                     "type": "coop"
                 },
-                "maxPlayers": 2,
-                "players": [
-                    "5474476a96af22405e619ebe"
-                ],
+                "description": "Sample match for testing",
+                "events": [],
+                "game_id": "545a05d2fd2e2eab09077615",
                 "globalState": {},
-                "lastEventId": 0,
-                "events": []
+                "lastEventId": "548723f773aa8afbc54bd7c9",
+                "maxPlayers": 3,
+                "players": [
+                    {
+                        "gamer_id": "548723f78e2af1fbc5cc326b",
+                        "profile": {
+                            "displayName": "Guest",
+                            "lang": "en"
+                        }
+                    }
+                ],
+                "status": "running"
             }
         }
 
 
-## GET /v1/gamer/matches{?properties}
+## GET /v1/gamer/matches{?properties}{?participating}{?finished}{?invited}
 
 Lists the matches available for join, using a query to filter the results.
 
@@ -1615,6 +1634,9 @@ The following will return the matches which have a property named type with valu
 
 + Parameters
     + properties (required, string) ... a JSON string specifying the properties that need to be present in order to return a match. The JSON uses the filtering syntax as documented above.
+    + participating (optional) ... pass this parameter to only list matches to which you are participating.
+    + finished (optional) ... pass this to include finished matches in the result. Not recommended but can be used with the `participating` filter to gather info about your past games.
+    + invited (optional) ... pass this to filter by matches to which you are currently invited. You are only marked as invited to a match until you join it.
     + limit (optional, number) ... the maximum number of matches to return. Used for pagination. Defaults to 30.
     + skip (optional, number) ... the index of the first item to return. Used for pagination. Zero-based, defaults to 0.
 
@@ -1629,25 +1651,27 @@ The following will return the matches which have a property named type with valu
 + Response 200 (application/json)
 
         {
+            "count": 1,
             "matches": [
                 {
-                    "_id": "547447bde0d4d97c5ead8aaf",
-                    "game_id": "541715e10476afa004fc3b82",
-                    "status": "running",
-                    "description": "Sample match for testing",
+                    "_id": "548721c15b06a5fec3315a97",
+                    "creator": {
+                        "gamer_id": "548721c15b06a5fec3315a95",
+                        "profile": {
+                            "displayName": "Guest",
+                            "lang": "en"
+                        }
+                    },
                     "customProperties": {
+                        "other": "property",
                         "type": "coop"
                     },
-                    "maxPlayers": 2,
-                    "players": [
-                        "547447bce0d4d97c5ead8aad"
-                    ],
-                    "globalState": {},
-                    "lastEventId": 0,
-                    "events": []
-                }
-            ],
-            "count": 1
+                    "description": "Sample match for testing",
+                    "game_id": "545a05d2fd2e2eab09077615",
+                    "maxPlayers": 3,
+                    "status": "running"
+                },
+            ]
         }
 
 ## GET /v1/gamer/matches/{match_id}
@@ -1669,20 +1693,34 @@ Fetches a given match. The response looks slightly different from that of a list
 
         {
             "match": {
-                "_id": "547447e92e9dca9d5ef1155b",
-                "game_id": "541715e10476afa004fc3b82",
-                "status": "running",
-                "description": "Sample match for testing",
+                "_id": "548724abfe4ce589c6f81d22",
+                "creator": {
+                    "gamer_id": "548724abfe4ce589c6f81d20",
+                    "profile": {
+                        "displayName": "Guest",
+                        "lang": "en"
+                    }
+                },
                 "customProperties": {
+                    "other": "property",
                     "type": "coop"
                 },
-                "maxPlayers": 2,
-                "players": [
-                    "547447e92e9dca9d5ef11559"
-                ],
+                "description": "Sample match for testing",
+                "events": [],
+                "game_id": "545a05d2fd2e2eab09077615",
                 "globalState": {},
-                "lastEventId": 0,
-                "events": []
+                "lastEventId": "548724ab612bff89c680e179",
+                "maxPlayers": 3,
+                "players": [
+                    {
+                        "gamer_id": "548724abfe4ce589c6f81d20",
+                        "profile": {
+                            "displayName": "Guest",
+                            "lang": "en"
+                        }
+                    }
+                ],
+                "status": "running"
             }
         }
 
@@ -1694,57 +1732,6 @@ Fetches a given match. The response looks slightly different from that of a list
             "status": 404
         }
 
-
-## GET /v1/gamer/matches/participating
-
-Lists the matches to which you are participating.
-
-+ Request (application/json)
-
-    + Headers
-
-            x-apikey : testgame-key
-            x-apisecret : testgame-secret
-            Authorization: Basic gamer_id:gamer_secret
-
-+ Response 200 (application/json)
-
-        {
-            "matches": [
-                {
-                    "_id": "54744826540942cc5e281937",
-                    "game_id": "541715e10476afa004fc3b82",
-                    "status": "running",
-                    "description": "Sample match for testing",
-                    "customProperties": {
-                        "type": "coop"
-                    },
-                    "maxPlayers": 2,
-                    "players": [
-                        "54744826540942cc5e281935"
-                    ],
-                    "globalState": {},
-                    "lastEventId": 0,
-                    "events": []
-                },
-                {
-                    "_id": "54744826540942cc5e281938",
-                    "game_id": "541715e10476afa004fc3b82",
-                    "status": "running",
-                    "description": "Another sample match",
-                    "customProperties": {
-                        "type": "versus"
-                    },
-                    "maxPlayers": 1,
-                    "players": [
-                        "54744826540942cc5e281935"
-                    ],
-                    "globalState": {},
-                    "lastEventId": 0,
-                    "events": []
-                }
-            ]
-        }
 
 ## POST /v1/gamer/matches/{id}/join
 
@@ -1803,7 +1790,7 @@ Events are broadcasted in other situations, such as moves, but they are describe
 + Request (application/json)
 
     + Parameters
-        + match_id (required, string) ... the ID of the match to join.
+        + id (required, string) ... the ID of the match to join.
 
     + Headers
 
@@ -1815,21 +1802,51 @@ Events are broadcasted in other situations, such as moves, but they are describe
 
         {
             "match": {
-                "_id": "54744d9fad0f8b6b62e3b58b",
-                "game_id": "541715e10476afa004fc3b82",
-                "status": "running",
-                "description": "Sample match for testing",
+                "_id": "5487260cf45e5f84c7cd7225",
+                "creator": {
+                    "gamer_id": "5487260cf45e5f84c7cd7223",
+                    "profile": {
+                        "displayName": "Guest",
+                        "lang": "en"
+                    }
+                },
                 "customProperties": {
+                    "other": "property",
                     "type": "coop"
                 },
+                "description": "Sample match for testing",
+                "events": [
+                    {
+                        "event": {
+                            "_id": "5487260c1d449b84c728d956",
+                            "playersJoined": [
+                                "5487260cf45e5f84c7cd7224"
+                            ]
+                        },
+                        "type": "match.join"
+                    }
+                ],
+                "game_id": "545a05d2fd2e2eab09077615",
+                "globalState": {},
+                "lastEventId": "5487260c1d449b84c728d956",
                 "maxPlayers": 3,
                 "players": [
-                    "54744d9fad0f8b6b62e3b589",
-                    "54744d9fad0f8b6b62e3b58a"
+                    {
+                        "gamer_id": "5487260cf45e5f84c7cd7223",
+                        "profile": {
+                            "displayName": "Guest",
+                            "lang": "en"
+                        }
+                    },
+                    {
+                        "gamer_id": "5487260cf45e5f84c7cd7224",
+                        "profile": {
+                            "displayName": "Guest",
+                            "lang": "en"
+                        }
+                    }
                 ],
-                "globalState": {},
-                "lastEventId": 0,
-                "events": []
+                "status": "running"
             }
         }
 
@@ -1881,19 +1898,8 @@ Leave a match. This only works if you are currently part of the match, or you wi
 
         {
             "match": {
-                "_id": "547452e227a434d1657f8cad",
-                "customProperties": {
-                    "type": "coop"
-                },
-                "description": "Sample match for testing",
-                "game_id": "541715e10476afa004fc3b82",
-                "globalState": {
-                    "full": 1,
-                    "score": 200
-                },
-                "lastEventId": "547452e24a0bd3d1656deb59",
-                "maxPlayers": 3,
-                "events": [],
+                "_id": "548726461c4158b4c73d43fa",
+                "lastEventId": "5487264710de0db4c71fe752",
                 "status": "finished"
             }
         }
@@ -1904,6 +1910,71 @@ Leave a match. This only works if you are currently part of the match, or you wi
             "name": "InvalidMatch",
             "message": "The match does not exist",
             "status": 404
+        }
+
++ Response 433 (application/json)
+
+        {
+            "name": "BadMatchID",
+            "message": "This match does not exist or is not active"
+        }
+
+## POST /v1/gamer/matches/{id}/invite/{gamer_id}
+
+Allows to invite another person to a match. Should be used with private matches. Matches can be made private by using a filter when listing matches. For instance, you may require a property to be present in the match, such as `customProperties: {"public": 1}` and filter out by `?properties={"public": 1}` when listing the matches available. In that case, if you want to play against a given set of opponents, you may simply limit the maximum number of players, and invite each of your opponents.
+
+When someone is invited, a message as follows will be received:
+
+    {
+        "type": "match.invite",
+        "event": {
+            "_id": "54784d07a0fcf2000086457d",
+            "match_id": "54784d07f10c190000cb96e3"
+            "inviter": {
+                "gamer_id": "5487260cf45e5f84c7cd7223",
+                "profile": {
+                    "displayName": "Guest",
+                    "lang": "en"
+                }
+            }
+        },
+        "id": "d2f908d1-40d8-4f73-802e-fe0086bb6cd9"
+    }
+
++ Request (application/json)
+
+    + Parameters
+        + id (required, string) ... the ID of the match to operate on.
+        + gamer_id (required, string) ... the ID of the gamer to invite on this match.
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        {
+            "match": {
+                "_id": "5488121cebc67955fb8f42e2",
+                "lastEventId": "5488121c4d95f055fbadde9a",
+                "status": "running"
+            }
+        }
+
++ Response 431 (application/json)
+
+        {
+            "message": "The player is already invited to the match",
+            "name": "AlreadyInvitedToMatch"
+        }
+
++ Response 433 (application/json)
+
+        {
+            "message": "A passed gamer ID is invalid",
+            "name": "BadGamerID"
         }
 
 + Response 433 (application/json)
@@ -1949,7 +2020,7 @@ Important thing: the `globalState` node only includes what has changed, not the 
 
     + Parameters
         + lastEventId (required, string) ... the ID of the last move, as received in the body of the match received when joining, or the value received in the last event. Allows to make sure that you are synchronized with the match before making a move.
-        + match_id (required, string) ... the ID of the match to operate on.
+        + id (required, string) ... the ID of the match to operate on.
 
     + Headers
 
@@ -1972,38 +2043,9 @@ Important thing: the `globalState` node only includes what has changed, not the 
 
         {
             "match": {
-                "_id": "547841765e4cfe0000bf6909",
-                "game_id": "545a05d2fd2e2eab09077615",
-                "creator": "547841755e4cfe0000bf6907",
-                "status": "running",
-                "description": "Sample match for testing",
-                "customProperties": {
-                    "type": "coop"
-                },
-                "maxPlayers": 3,
-                "players": [
-                    "547841755e4cfe0000bf6907",
-                    "547841765e4cfe0000bf6908"
-                ],
-                "lastEventId": "54784176a8df72000049340e",
-                "events": [
-                    {
-                        "type": "match.move",
-                        "event": {
-                            "_id": "54784176a8df72000049340e",
-                            "player_id": "547841755e4cfe0000bf6907",
-                            "move": {
-                                "what": "changed"
-                            },
-                            "globalState": {
-                                "full": "game_state"
-                            }
-                        }
-                    }
-                ],
-                "globalState": {
-                    "full": 1
-                }
+                "_id": "548726461c4158b4c73d43fa",
+                "lastEventId": "5487264710de0db4c71fe752",
+                "status": "finished"
             }
         }
 
@@ -2032,7 +2074,7 @@ This only works if you are currently part of the match, or you will get an HTTP 
 
     + Parameters
         + lastEventId (required, string) ... the ID of the last move, as received in the body of the match received when joining, or the value received in the last event. Allows to make sure that you are synchronized with the match before making a move.
-        + match_id (required, string) ... the ID of the match to operate on.
+        + id (required, string) ... the ID of the match to operate on.
 
     + Headers
 
@@ -2044,25 +2086,9 @@ This only works if you are currently part of the match, or you will get an HTTP 
 
         {
             "match": {
-                "_id": "547844691f4ee7000061c6dd",
-                "game_id": "545a05d2fd2e2eab09077615",
-                "creator": "547844691f4ee7000061c6db",
-                "status": "finished",
-                "description": "Sample match for testing",
-                "customProperties": {
-                    "type": "coop"
-                },
-                "maxPlayers": 3,
-                "players": [
-                    "547844691f4ee7000061c6db",
-                    "547844691f4ee7000061c6dc"
-                ],
-                "globalState": {
-                    "full": 1,
-                    "score": 200
-                },
-                "lastEventId": "5478446ae5d9ea00003f1a9c",
-                "events": []
+                "_id": "548726461c4158b4c73d43fa",
+                "lastEventId": "5487264710de0db4c71fe752",
+                "status": "finished"
             }
         }
 
