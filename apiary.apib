@@ -1623,7 +1623,7 @@ The response of most calls only include basic properties. To get all properties,
         }
 
 
-## GET /v1/gamer/matches/{domain}{?properties}{?participating}{?finished}{?invited}
+## GET /v1/gamer/matches/{domain}/{?properties}{?participating}{?finished}{?invited}
 
 Lists the matches available for join, using a query to filter the results.
 
@@ -1676,7 +1676,9 @@ The following will return the matches which have a property named type with valu
             ]
         }
 
-## GET /v1/gamer/matches/{domain}/{match_id}
+## Working with a match [/v1/gamer/matches/{domain}/{match_id}]
+
+### Fetching in-depth information about a match [GET]
 
 Fetches a given match. The response looks slightly different from that of a list of matches, but the data reported for the match is the same.
 
@@ -1734,6 +1736,33 @@ Fetches a given match. The response looks slightly different from that of a list
             "status": 404
         }
 
+### Deleting a match [DELETE]
+
+Deletes a match, erasing it along with its history. You need to be the creator of the match to perform this operation.
+
++ Parameters
+    + match_id (required, string) ... the ID of the match to delete.
+
++ Request (application/json)
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        {
+            "done": 1
+        }
+
++ Response 431 (application/json)
+
+        {
+            "name": "MatchNotFinished",
+            "message": "This match needs to be finished in order to perform this operation"
+        }
 
 ## POST /v1/gamer/matches/{domain}/{id}/join
 
@@ -2118,31 +2147,3 @@ This only works if you are currently part of the match, or you will get an HTTP 
             "message": "This match does not exist or is not active"
         }
 
-
-## DELETE /v1/gamer/matches/{domain}/{match_id}
-
-Deletes a match, erasing it along with its history. You need to be the creator of the match to perform this operation.
-
-+ Parameters
-    + match_id (required, string) ... the ID of the match to delete.
-
-+ Request (application/json)
-
-    + Headers
-
-            x-apikey : testgame-key
-            x-apisecret : testgame-secret
-            Authorization: Basic gamer_id:gamer_secret
-
-+ Response 200 (application/json)
-
-        {
-            "done": 1
-        }
-
-+ Response 431 (application/json)
-
-        {
-            "name": "MatchNotFinished",
-            "message": "This match needs to be finished in order to perform this operation"
-        }
