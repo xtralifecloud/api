@@ -1543,7 +1543,9 @@ Clan of the Cloud provides a simple way to run matches between a set of gamers u
 
 This means that this match system is better suited to turn by turn game, rather than real time game such as an MMORPG, which may require a more sophisticated system handled on your servers.
 
-## POST /v1/gamer/matches
+As with other functionality, matches are scoped by domain, allowing to share data amongst multiple games. For more information, please take a look at the section [Key-Value Store](#keyvaluestore).
+
+## POST /v1/gamer/matches/{domain}/
 
 Creates a new match, automatically attached to your gamer ID. Only the `maxPlayers` node is required.
 
@@ -1621,7 +1623,7 @@ The response of most calls only include basic properties. To get all properties,
         }
 
 
-## GET /v1/gamer/matches{?properties}{?participating}{?finished}{?invited}
+## GET /v1/gamer/matches/{domain}{?properties}{?participating}{?finished}{?invited}
 
 Lists the matches available for join, using a query to filter the results.
 
@@ -1674,7 +1676,7 @@ The following will return the matches which have a property named type with valu
             ]
         }
 
-## GET /v1/gamer/matches/{match_id}
+## GET /v1/gamer/matches/{domain}/{match_id}
 
 Fetches a given match. The response looks slightly different from that of a list of matches, but the data reported for the match is the same.
 
@@ -1733,7 +1735,7 @@ Fetches a given match. The response looks slightly different from that of a list
         }
 
 
-## POST /v1/gamer/matches/{id}/join
+## POST /v1/gamer/matches/{domain}/{id}/join
 
 Join an existing match.
 
@@ -1891,7 +1893,7 @@ Events are broadcasted in other situations, such as moves, but they are describe
             "message": "This match does not exist or is not active"
         }
 
-## POST /v1/gamer/matches/{id}/leave
+## POST /v1/gamer/matches/{domain}/{id}/leave
 
 Leave a match. This only works if you are currently part of the match, or you will get an HTTP 433.
 
@@ -1931,7 +1933,7 @@ Leave a match. This only works if you are currently part of the match, or you wi
             "message": "This match does not exist or is not active"
         }
 
-## POST /v1/gamer/matches/{id}/invite/{gamer_id}
+## POST /v1/gamer/matches/{domain}/{id}/invite/{gamer_id}
 
 Allows to invite another person to a match. Should be used with private matches. Matches can be made private by using a filter when listing matches. For instance, you may require a property to be present in the match, such as `customProperties: {"public": 1}` and filter out by `?properties={"public": 1}` when listing the matches available. In that case, if you want to play against a given set of opponents, you may simply limit the maximum number of players, and invite each of your opponents.
 
@@ -1996,7 +1998,7 @@ When someone is invited, a message as follows will be received:
             "message": "This match does not exist or is not active"
         }
 
-## POST /v1/gamer/matches/{id}/move{?lastEventId}
+## POST /v1/gamer/matches/{domain}/{id}/move{?lastEventId}
 
 Posts a move. This will notify a progress in the match. Note that the `globalState` is updated incrementally, according to the passed attributes. This means that attributes not passed do not get modified or deleted from the `globalState` stored for this game.
 This only works if you are currently part of the match, or you will get an HTTP 433.
@@ -2074,7 +2076,7 @@ Important thing: the `globalState` node only includes what has changed, not the 
         }
 
 
-## POST /v1/gamer/matches/{id}/finish{?lastEventId}
+## POST /v1/gamer/matches/{domain}/{id}/finish{?lastEventId}
 
 Marks a match as finished, meaning that no other player will be able to join, post moves or even leave the match: consider it frozen and "archived" after this operation.
 This only works if you are currently part of the match, or you will get an HTTP 433.
@@ -2117,7 +2119,7 @@ This only works if you are currently part of the match, or you will get an HTTP 
         }
 
 
-## DELETE /v1/gamer/matches/{match_id}
+## DELETE /v1/gamer/matches/{domain}/{match_id}
 
 Deletes a match, erasing it along with its history. You need to be the creator of the match to perform this operation.
 
