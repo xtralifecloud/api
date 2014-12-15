@@ -1566,6 +1566,9 @@ Creates a new match, automatically attached to your gamer ID. Only the `maxPlaye
 
 The response of most calls only include basic properties. To get all properties, including the global state and event list, you must either create, join or fetch a single match.
 
++ Parameters
+    + domain (required, string) ... the domain on which to place the match (use private by default for a domain that is scoped for your game)
+
 + Request (application/json)
 
     + Headers
@@ -1635,6 +1638,7 @@ The following will return the matches which have a property named type with valu
 `GET /v1/gamer/matches?properties={"type": "coop"}`
 
 + Parameters
+    + domain (required, string) ... the domain on which to look for matches (use private by default for a domain that is scoped for your game)
     + properties (required, string) ... a JSON string specifying the properties that need to be present in order to return a match. The JSON uses the filtering syntax as documented above.
     + participating (optional) ... pass this parameter to only list matches to which you are participating.
     + finished (optional) ... pass this to include finished matches in the result. Not recommended but can be used with the `participating` filter to gather info about your past games.
@@ -1676,7 +1680,7 @@ The following will return the matches which have a property named type with valu
             ]
         }
 
-## Working with a match [/v1/gamer/matches/{domain}/{match_id}]
+## Working with a match [/v1/gamer/matches/{match_id}]
 
 ### Fetching in-depth information about a match [GET]
 
@@ -1764,7 +1768,7 @@ Deletes a match, erasing it along with its history. You need to be the creator o
             "message": "This match needs to be finished in order to perform this operation"
         }
 
-## POST /v1/gamer/matches/{domain}/{id}/join
+## POST /v1/gamer/matches/{id}/join
 
 Join an existing match.
 
@@ -1922,7 +1926,7 @@ Events are broadcasted in other situations, such as moves, but they are describe
             "message": "This match does not exist or is not active"
         }
 
-## POST /v1/gamer/matches/{domain}/{id}/leave
+## POST /v1/gamer/matches/{id}/leave
 
 Leave a match. This only works if you are currently part of the match, or you will get an HTTP 433.
 
@@ -1962,7 +1966,7 @@ Leave a match. This only works if you are currently part of the match, or you wi
             "message": "This match does not exist or is not active"
         }
 
-## POST /v1/gamer/matches/{domain}/{id}/invite/{gamer_id}
+## POST /v1/gamer/matches/{id}/invite/{gamer_id}
 
 Allows to invite another person to a match. Should be used with private matches. Matches can be made private by using a filter when listing matches. For instance, you may require a property to be present in the match, such as `customProperties: {"public": 1}` and filter out by `?properties={"public": 1}` when listing the matches available. In that case, if you want to play against a given set of opponents, you may simply limit the maximum number of players, and invite each of your opponents.
 
@@ -2027,7 +2031,7 @@ When someone is invited, a message as follows will be received:
             "message": "This match does not exist or is not active"
         }
 
-## POST /v1/gamer/matches/{domain}/{id}/move{?lastEventId}
+## POST /v1/gamer/matches/{id}/move{?lastEventId}
 
 Posts a move. This will notify a progress in the match. Note that the `globalState` is updated incrementally, according to the passed attributes. This means that attributes not passed do not get modified or deleted from the `globalState` stored for this game.
 This only works if you are currently part of the match, or you will get an HTTP 433.
@@ -2105,7 +2109,7 @@ Important thing: the `globalState` node only includes what has changed, not the 
         }
 
 
-## POST /v1/gamer/matches/{domain}/{id}/finish{?lastEventId}
+## POST /v1/gamer/matches/{id}/finish{?lastEventId}
 
 Marks a match as finished, meaning that no other player will be able to join, post moves or even leave the match: consider it frozen and "archived" after this operation.
 This only works if you are currently part of the match, or you will get an HTTP 433.
