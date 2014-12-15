@@ -1545,7 +1545,7 @@ This means that this match system is better suited to turn by turn game, rather 
 
 As with other functionality, matches are scoped by domain, allowing to share data amongst multiple games. For more information, please take a look at the section [Key-Value Store](#keyvaluestore).
 
-## POST /v1/gamer/matches/{domain}/
+## POST /v1/gamer/matches{?domain}
 
 Creates a new match, automatically attached to your gamer ID. Only the `maxPlayers` node is required.
 
@@ -1626,7 +1626,7 @@ The response of most calls only include basic properties. To get all properties,
         }
 
 
-## GET /v1/gamer/matches/{domain}/{?properties}{?participating}{?finished}{?invited}
+## GET /v1/gamer/matches{?domain}{&properties}{&participating}{&finished}{&invited}
 
 Lists the matches available for join, using a query to filter the results.
 
@@ -1635,7 +1635,7 @@ Lists the matches available for join, using a query to filter the results.
 Matches contain an user defined field named `customProperties`, which can be used by developers to store and fetch additional details about a game. In the example of a card-based game, one of these properties could store the minimum bet. This information could also be used to help players to join games best suited to their willing. A filter is specified as an URL-encoded JSON containing attributes and the corresponding expected value. No comparison operators are available for now, now is it possible to customize the implementation : when there are more than one attributes, all conditions specified must be met in order for the match to qualify.
 
 The following will return the matches which have a property named type with value being "coop".
-`GET /v1/gamer/matches?properties={"type": "coop"}`
+`GET /v1/gamer/matches?domain=private&properties={"type": "coop"}`
 
 + Parameters
     + domain (required, string) ... the domain on which to look for matches (use private by default for a domain that is scoped for your game)
