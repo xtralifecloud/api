@@ -1556,6 +1556,7 @@ Creates a new match, automatically attached to your gamer ID. Only the `maxPlaye
 |_id|string| ID of the match, keep it safe to allow for joining it or fetching it later (read only)
 |creator|string| ID of the gamer who created the game (read only)
 |customProperties|json| JSON containing the user properties of the match (only one level, with numbers or strings as values)
+|domain|string| domain to which the match belongs; used for scoping purposes (read only)
 |description|string| description of the game (non localized)
 |globalState|json| global state of the match, which may be used to reconstruct the game locally (read only)
 |lastEventId|string| ID of the last event, which must be passed by any player who wishes to make a move (read only)
@@ -1607,8 +1608,8 @@ The response of most calls only include basic properties. To get all properties,
                     "type": "coop"
                 },
                 "description": "Sample match for testing",
+                "domain": "com.clanofthecloud.cloudbuilder.azerty",
                 "events": [],
-                "game_id": "545a05d2fd2e2eab09077615",
                 "globalState": {},
                 "lastEventId": "548723f773aa8afbc54bd7c9",
                 "maxPlayers": 3,
@@ -1673,7 +1674,7 @@ The following will return the matches which have a property named type with valu
                         "type": "coop"
                     },
                     "description": "Sample match for testing",
-                    "game_id": "545a05d2fd2e2eab09077615",
+                    "domain": "com.clanofthecloud.cloudbuilder.azerty",
                     "maxPlayers": 3,
                     "status": "running"
                 },
@@ -1714,8 +1715,8 @@ Fetches a given match. The response looks slightly different from that of a list
                     "type": "coop"
                 },
                 "description": "Sample match for testing",
+                "domain": "com.clanofthecloud.cloudbuilder.azerty",
                 "events": [],
-                "game_id": "545a05d2fd2e2eab09077615",
                 "globalState": {},
                 "lastEventId": "548724ab612bff89c680e179",
                 "maxPlayers": 3,
@@ -1862,6 +1863,7 @@ Events are broadcasted in other situations, such as moves, but they are describe
                     "type": "coop"
                 },
                 "description": "Sample match for testing",
+                "domain": "com.clanofthecloud.cloudbuilder.azerty",
                 "events": [
                     {
                         "event": {
@@ -1873,7 +1875,6 @@ Events are broadcasted in other situations, such as moves, but they are describe
                         "type": "match.join"
                     }
                 ],
-                "game_id": "545a05d2fd2e2eab09077615",
                 "globalState": {},
                 "lastEventId": "5487260c1d449b84c728d956",
                 "maxPlayers": 3,
@@ -2150,4 +2151,3 @@ This only works if you are currently part of the match, or you will get an HTTP 
             "name": "BadMatchID",
             "message": "This match does not exist or is not active"
         }
-
