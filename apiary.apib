@@ -2035,6 +2035,38 @@ When someone is invited, a message as follows will be received:
             "message": "This match does not exist or is not active"
         }
 
+## DELETE /v1/gamer/matches/{id}/invitation
+
+Allows to dismiss an invitation to a match. Works for the authenticated gamer and only if the gamer has been invited previously.
+
++ Request (application/json)
+
+    + Parameters
+        + id (required, string) ... the ID of the match to operate on.
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        {
+            "match": {
+                "_id": "5488121cebc67955fb8f42e2",
+                "lastEventId": "5488121c4d95f055fbadde9a",
+                "status": "running"
+            }
+        }
+
++ Response 433 (application/json)
+
+        {
+            "name": "BadMatchID",
+            "message": "This match does not exist or is not active"
+        }
+
 ## POST /v1/gamer/matches/{id}/move{?lastEventId}
 
 Posts a move. This will notify a progress in the match. Note that the `globalState` is updated incrementally, according to the passed attributes. This means that attributes not passed do not get modified or deleted from the `globalState` stored for this game.
