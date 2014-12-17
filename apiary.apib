@@ -1563,6 +1563,7 @@ Creates a new match, automatically attached to your gamer ID. Only the `maxPlaye
 |maxPlayers|number| maximum number of players who can join this game
 |events|json| list of pending events, cleared whenever a globalState is posted along with a move by one of the players (read only)
 |players|array| list of IDs of players participating to the match (read only)
+|seed|31-bit integer| a random number generated upon match creation, to be used by players (read only)
 |status|string| either "running" (meaning that the match is running), either "finished" (meaning that nobody can join the match anymore) (read only)
 
 The response of most calls only include basic properties. To get all properties, including the global state and event list, you must either create, join or fetch a single match.
@@ -1595,9 +1596,9 @@ The response of most calls only include basic properties. To get all properties,
 
         {
             "match": {
-                "_id": "548723f78e2af1fbc5cc326d",
+                "_id": "54919c51f8d8690000fe5f6c",
                 "creator": {
-                    "gamer_id": "548723f78e2af1fbc5cc326b",
+                    "gamer_id": "54919c510bfa2100001bd548",
                     "profile": {
                         "displayName": "Guest",
                         "lang": "en"
@@ -1611,17 +1612,18 @@ The response of most calls only include basic properties. To get all properties,
                 "domain": "private",
                 "events": [],
                 "globalState": {},
-                "lastEventId": "548723f773aa8afbc54bd7c9",
+                "lastEventId": "54919c51f8d8690000fe5f6b",
                 "maxPlayers": 3,
                 "players": [
                     {
-                        "gamer_id": "548723f78e2af1fbc5cc326b",
+                        "gamer_id": "54919c510bfa2100001bd548",
                         "profile": {
                             "displayName": "Guest",
                             "lang": "en"
                         }
                     }
                 ],
+                "seed": 1089745184,
                 "status": "running"
             }
         }
@@ -1894,6 +1896,7 @@ Events are broadcasted in other situations, such as moves, but they are describe
                         }
                     }
                 ],
+                "seed": 1089745184,
                 "status": "running"
             }
         }
