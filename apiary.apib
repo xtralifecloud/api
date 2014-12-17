@@ -1563,7 +1563,8 @@ Creates a new match, automatically attached to your gamer ID. Only the `maxPlaye
 |maxPlayers|number| maximum number of players who can join this game
 |events|json| list of pending events, cleared whenever a globalState is posted along with a move by one of the players (read only)
 |players|array| list of IDs of players participating to the match (read only)
-|seed|31-bit integer| a random number generated upon match creation, to be used by players (read only)
+|seed|31-bit integer| a random number generated upon match creation, to be used by players
+|shoe|array| an array of objects that are shuffled when the match starts. You can put anything you want inside and use it as values for your next game.
 |status|string| either "running" (meaning that the match is running), either "finished" (meaning that nobody can join the match anymore) (read only)
 
 The response of most calls only include basic properties. To get all properties, including the global state and event list, you must either create, join or fetch a single match.
@@ -1589,7 +1590,8 @@ The response of most calls only include basic properties. To get all properties,
                 },
                 "globalState": {
                     "startup": "globalState"
-                }
+                },
+                "shoe": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
             }
 
 + Response 200 (application/json)
@@ -1624,6 +1626,7 @@ The response of most calls only include basic properties. To get all properties,
                     }
                 ],
                 "seed": 1089745184,
+                "shoe":[2,3,4,1,10,9,7,6,5,8],
                 "status": "running"
             }
         }
@@ -1897,6 +1900,7 @@ Events are broadcasted in other situations, such as moves, but they are describe
                     }
                 ],
                 "seed": 1089745184,
+                "shoe":[2,3,4,1,10,9,7,6,5,8],
                 "status": "running"
             }
         }
