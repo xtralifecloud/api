@@ -1789,6 +1789,7 @@ This last event comes in two forms: either as a result of a match operation (in 
 In case a player joins the match, the following event will be received by other players:
 
     {
+        "type": "match.join",
         "event": {
             "_id": "548866edba0ec600005e1941",
             "match_id": "548866ed74c2e0000098db95",
@@ -1802,13 +1803,13 @@ In case a player joins the match, the following event will be received by other 
                 }
             ]
         },
-        "id": "9155987d-6322-46d4-9403-e90ab4ba5fa3",
-        "type": "match.join"
+        "id": "9155987d-6322-46d4-9403-e90ab4ba5fa3"
     }
 
 In case a player leaves the match, similarly the following event will be received by others:
 
     {
+        "type": "match.leave",
         "event": {
             "_id": "548866eeba0ec600005e1948",
             "match_id": "548866ed74c2e0000098db95",
@@ -1822,8 +1823,7 @@ In case a player leaves the match, similarly the following event will be receive
                 }
             ]
         },
-        "id": "5007fd0a-1365-4e87-aba8-5d916731e684",
-        "type": "match.leave"
+        "id": "5007fd0a-1365-4e87-aba8-5d916731e684"
     }
 
 In case the match is marked as finished, the following event will be broadcasted to all players except the one who initiated it.
@@ -1836,6 +1836,18 @@ In case the match is marked as finished, the following event will be broadcasted
             "match_id": "54784d07f10c190000cb96e3"
         },
         "id": "d2f908d1-40d8-4f73-802e-fe0086bb6cd5"
+    }
+
+In case an element was drawn from the shoe, an event like this is fired:
+
+    {
+        "type": "match.shoedraw",
+        "event": {
+            "_id": "5492a7c7a6725f0000b59e4f",
+            "count": 2,
+            "match_id": "5492a7c6a6725f0000b59e46"
+        },
+        "id": "5e4e82c1-d728-4a4b-be40-e4abec320440"
     }
 
 Events are broadcasted in other situations, such as moves, but they are described within the related call documentation.
@@ -2141,7 +2153,70 @@ Important thing: the `globalState` node only includes what has changed, not the 
             "status": 400
         }
 
-+ Response 431 (application/json)
++ Response 521 (application/json)
+
+        {
+            "name": "InvalidLastMoveId",
+            "message": "This move ID is invalid, please resynchronize"
+        }
+
+
+## POST /v1/gamer/matches/{id}/shoe/draw{?count}{&lastEventId}
+
+Draws an element from the shoe. Works if an array has been posted as shoe when creating the match.
+
+### Working with the shoe
+
+Along with the seed element that is returned with the detailed version of the match (i.e. when joining or fetching it), the shoe is another element that helps building random generator-based games.
+
+A shoe, as in Casino, is basically a container of possible values that are returned in a random order as they are poked. It could represent the values of the cards for instance. It is possible to have more than once the same element in the shoe (as when having two card sets). The shoe is posted by the person who creates the game and then shuffled. The shoe will remain hidden, with no one having access to it, until the match is finished.
+
+Players can draw one or more elements off the shoe by posting a request to this resource. The shoe is shared with all players, meaning that any element from the shoe is returned only once to a player having requested it.
+
+When all items have been drawn from the shoe and more items are requested, the existing serie is duplicated, shuffled and appended to the current shoe, meaning an endless play can be considered.
+
+Drawing items from the shoe will trigger one event of type `match.shoedraw` per request, sent to players except the caller. When the match finishes, fetching detailed info about the match will return the shoe. It can be used by all players to check that the game has been fair: should one player have hacked the game, it is possible to detect it by comparing the shoe to the actual moves.
+
++ Request (application/json)
+
+    + Parameters
+        + lastEventId (required, string) ... the ID of the last move, as received in the body of the match received when joining, or the value received in the last event. Allows to make sure that you are synchronized with the match before making a move.
+        + count (required, integer) ... the number of items to draw from the shoe.
+        + id (required, string) ... the ID of the match to operate on.
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        {
+            "drawnItems": [
+                {
+                    "prop4": "value4"
+                },
+                {
+                    "prop3": "value3"
+                }
+            ],
+            "match": {
+                "_id": "5492a7c6a6725f0000b59e46",
+                "lastEventId": "5492a7c7a6725f0000b59e4f",
+                "status": "running"
+            }
+        }
+
++ Response 400 (application/json)
+
+        {
+            "name": "MissingParameter",
+            "message": "The parameter is invalid or absent: count",
+            "status": 400
+        }
+
++ Response 521 (application/json)
 
         {
             "name": "InvalidLastMoveId",
