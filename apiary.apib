@@ -1778,6 +1778,8 @@ Deletes a match, erasing it along with its history. You need to be the creator o
 
 Join an existing match.
 
+A field named `osn` can be passed as shown in the sample request to send a push notification to the users who are not active at the moment.
+
 ### Events related to matches
 
 Any player who has joined the match will automatically receive events indicating changes made to the match. These events happen when a player joins the match, leaves it or posts a move.
@@ -1862,6 +1864,12 @@ Events are broadcasted in other situations, such as moves, but they are describe
             x-apikey : testgame-key
             x-apisecret : testgame-secret
             Authorization: Basic gamer_id:gamer_secret
+
+    + Body
+
+            {
+                "osn": {"en": "I just joined!", "ja": "tadaima!"}
+            }
 
 + Response 200 (application/json)
 
@@ -1950,6 +1958,8 @@ Events are broadcasted in other situations, such as moves, but they are describe
 
 Leave a match. This only works if you are currently part of the match, or you will get an HTTP 433.
 
+A field named `osn` can be passed as shown in the sample request to send a push notification to the users who are not active at the moment.
+
 + Request (application/json)
 
     + Parameters
@@ -1960,6 +1970,12 @@ Leave a match. This only works if you are currently part of the match, or you wi
             x-apikey : testgame-key
             x-apisecret : testgame-secret
             Authorization: Basic gamer_id:gamer_secret
+
+    + Body
+
+            {
+                "osn": {"en": "Bye bye!", "fi": "Näkemiin!"}
+            }
 
 + Response 200 (application/json)
 
@@ -2008,6 +2024,8 @@ When someone is invited, a message as follows will be received:
         "id": "d2f908d1-40d8-4f73-802e-fe0086bb6cd9"
     }
 
+A field named `osn` can be passed as shown in the sample request to send a push notification to the users who are not active at the moment.
+
 + Request (application/json)
 
     + Parameters
@@ -2019,6 +2037,12 @@ When someone is invited, a message as follows will be received:
             x-apikey : testgame-key
             x-apisecret : testgame-secret
             Authorization: Basic gamer_id:gamer_secret
+
+    + Body
+
+            {
+                "osn": {"en": "Please join my super duper game!", "it": "Sei invitato!"}
+            }
 
 + Response 200 (application/json)
 
@@ -2088,6 +2112,8 @@ Allows to dismiss an invitation to a match. Works for the authenticated gamer an
 Posts a move. This will notify a progress in the match. Note that the `globalState` is updated incrementally, according to the passed attributes. This means that attributes not passed do not get modified or deleted from the `globalState` stored for this game.
 This only works if you are currently part of the match, or you will get an HTTP 433.
 
+A field named `osn` can be passed as shown in the sample request to send a push notification to the users who are not active at the moment.
+
 ### Making moves
 
 Once a match has been started, any player currently belonging to the game is allowed to make moves. It is up to the game itself to determine which players may play and when.
@@ -2132,7 +2158,8 @@ Important thing: the `globalState` node only includes what has changed, not the 
                 },
                 "globalState": {
                     "full": "game_state"
-                }
+                },
+                "osn": {"en": "It is now your turn!", "de": "Spielen Sie jetzt!"}
             }
 
 + Response 200 (application/json)
@@ -2165,6 +2192,8 @@ Important thing: the `globalState` node only includes what has changed, not the 
 
 Draws an element from the shoe. Works if an array has been posted as shoe when creating the match.
 
+A field named `osn` can be passed as shown in the sample request to send a push notification to the users who are not active at the moment.
+
 ### Working with the shoe
 
 Along with the seed element that is returned with the detailed version of the match (i.e. when joining or fetching it), the shoe is another element that helps building random generator-based games.
@@ -2189,6 +2218,13 @@ Drawing items from the shoe will trigger one event of type `match.shoedraw` per 
             x-apikey : testgame-key
             x-apisecret : testgame-secret
             Authorization: Basic gamer_id:gamer_secret
+
+    + Body
+
+            {
+                "osn": {"en": "I just drew something from the shoe!", "fr": "J'ai récupéré un objet du sabot!"}
+            }
+
 
 + Response 200 (application/json)
 
@@ -2229,6 +2265,8 @@ Drawing items from the shoe will trigger one event of type `match.shoedraw` per 
 Marks a match as finished, meaning that no other player will be able to join, post moves or even leave the match: consider it frozen and "archived" after this operation.
 This only works if you are currently part of the match, or you will get an HTTP 433.
 
+A field named `osn` can be passed as shown in the sample request to send a push notification to the users who are not active at the moment.
+
 + Request (application/json)
 
     + Parameters
@@ -2240,6 +2278,12 @@ This only works if you are currently part of the match, or you will get an HTTP 
             x-apikey : testgame-key
             x-apisecret : testgame-secret
             Authorization: Basic gamer_id:gamer_secret
+
+    + Body
+
+            {
+                "osn": {"en": "The match is finished.", "es": "El partido ha terminado."}
+            }
 
 + Response 200 (application/json)
 
