@@ -1231,9 +1231,41 @@ Get every godchildren for the current user.
 
 ## Scores
 
+### POST /v2.6/gamer/scores/{domain}/{leaderboard}{?order}{&force}
+
+This is not necessarily the highest score, but only the highest is stored.
+
++ Parameters
+    + domain (required, string) ... the domain used for this leaderboard
+    + leaderboard (required, string) ... the board where the gamer score in
+    + order = `hightolow` (optional, string) ... the order to sort the board `hightolow` or `lowtohigh`
+    + force = `false` (optional, string) ... if true, override any previous score
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
+    + Body
+        
+            {
+                "score": 100,
+                "info" : "whatever json"
+            }
+
++ Response 200 (application/json)
+
+        { 
+            "rank" : 1
+        }
+
+
 ### POST /v1/gamer/scores/{leaderbord}{?order}
 
-this is not necessary the highest score, but only the highest is stored.
+this is not necessarily the highest score, but only the highest is stored.
 
 + Parameters
     + leaderbord (required, string) ... the board where the gamer score in
@@ -1260,6 +1292,56 @@ this is not necessary the highest score, but only the highest is stored.
             "rank" : 1
         }
 
+### GET /v2.6/gamer/scores/{domain}/{leaderboard}{?order}{&type}{&page}{&count}
+
++ Parameters
+    + domain (required, string) ... the domain used for this leaderboard
+    + leaderboard (required, string) ... the board where the gamer score in
+    + order = `hightolow` (optional, string) ... deprecated, defaults to leaderboard's ordering
+    + type = `highscore` (optional, string) ... one of ["highscore", "friendscore"]
+    + page = `1` (optional, number) ...  th epage number or a special "me" for centered scores
+    + count = `10` (optional, number) ... the max returned rows
+
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        {
+            "<leaderboard>" : {
+                "page" : 2,
+                "maxpage" : 100,
+                "rankOfFirst" : 10,
+                scores : [ 
+                        { "gamer_id_1": 
+                            { score : 100, info: "whatever", , timestamp : "", profile: {} } 
+                        }
+                        { "gamer_id_2": 
+                            { score : 90, info: "whatever", , timestamp : "", profile: {} } 
+                        }
+                    ]
+            }
+        }
+
++ Response 404 (application/json)
+
+        {
+            "code" : "LeaderboardNotFound",
+        }  
+
++ Response 402 (application/json)
+
+        {
+            "code" : "NoScoreYet",
+            "message" : "Asked for centered scores on a gamer who never scores"
+        }  
+        
 ### GET /v1/gamer/scores/{leaderbord}{?order}{&type}{&page}{&count}
 
 + Parameters
