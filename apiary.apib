@@ -912,7 +912,7 @@ The balance is also returned each time you create a new transaction
 
 # Group Gamer Properties
 
-## Properties [/v1/gamer/properties]
+## Properties [/v1/gamer/property/{domain}]
 
 Properties are used to allow match making...
 They are related to a game.
@@ -920,6 +920,9 @@ They are related to a game.
 ### Set properties [POST]
 
 Properties are basic type (number, stringn boolean) json
+
++ Parameters
+    + domain (required, string, `private`) ... the domain handling properties
 
 + Request (application/json)
 
@@ -950,6 +953,9 @@ Properties are basic type (number, stringn boolean) json
 
 
 ### Get properties [GET]
+
++ Parameters
+    + domain (required, string, `private`) ... the domain handling properties
 
 + Request (application/json)
 
@@ -986,12 +992,13 @@ Properties are basic type (number, stringn boolean) json
         }
 
 
-## Property [/v1/gamer/properties/{key}]
+## Property [/v2.6/gamer/property/{domain}/{key}]
 
 Properties are used to allow match making...
 They are related to a game.
 
 + Parameters
+    + domain (required, string, `private`) ... the domain handling properties
     + key (required, string) ... name of the property
 
 ### Set property [POST]
@@ -1032,7 +1039,9 @@ Properties are basic type (number, string, boolean) or array of basic type
 + Response 200 (application/json)
 
         { 
-            "Board": "river"
+            properties : { 
+                "Board": "river" 
+            }
         }
 
 
@@ -1057,9 +1066,10 @@ Properties are basic type (number, string, boolean) or array of basic type
 
 ## Friends
 
-### GET /v1/gamer/friends/{?status}
+### GET /v2.6/gamer/friends/{domain}/{?status}
 
 + Parameters
+    + domain (required, string, `private`) ... the domain handling relations
     + status (optional, string) ... "blacklist" to retrieve the blacklisted gamer's
 
 + Request (application/json)
@@ -1077,9 +1087,10 @@ Properties are basic type (number, string, boolean) or array of basic type
             {"<gamer_id_2>" : { displayName : "gamer2", lang : "fr" } }
         ] }
         
-### POST /v1/gamer/friends/{friendid}?{status}
+### POST /v2.6/gamer/friends/{domain}/{friendid}?{status}
 
 + Parameters
+    + domain (required, string, `private`) ... the domain handling relations
     + friendid (required, string) ... a gamer id
     + status (required, string) ... must be one of [`add` | `forget` | `blacklist`]
 
@@ -1131,11 +1142,14 @@ Properties are basic type (number, string, boolean) or array of basic type
 
 # Group Sponsoring
 
-## God father [/v1/gamer/godfather]
+## God father [/v2.6/gamer/godfather/{domain}]
 
 ### Get sponsoring code [PUT]
 
 Obtains a code for sponsoring. The code is different for each game
+
++ Parameters
+    + domain (required, string, `private`) ... the domain handling relations
 
 + Request (application/json)
 
@@ -1154,6 +1168,9 @@ Obtains a code for sponsoring. The code is different for each game
 ### Set godfather [POST]
 
 Set the godfather of the current user and give a reward to the godfather.
+
++ Parameters
+    + domain (required, string, `private`) ... the domain handling relations
 
 + Request (application/json)
 
@@ -1194,6 +1211,9 @@ Set the godfather of the current user and give a reward to the godfather.
 
 Retreive the godfather of the current user.
 
++ Parameters
+    + domain (required, string, `private`) ... the domain handling relations
+
 + Request (application/json)
 
     + Headers
@@ -1209,9 +1229,12 @@ Retreive the godfather of the current user.
         }
 
 
-### GET /v1/gamer/godchidren
+### GET /v2.6/gamer/godchidren/{domain}
 
 Get every godchildren for the current user.
+
++ Parameters
+    + domain (required, string, `private`) ... the domain handling relations
 
 + Request (application/json)
 
