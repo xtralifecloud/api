@@ -912,7 +912,11 @@ The balance is also returned each time you create a new transaction
 
 # Group Gamer Properties
 
-## Properties [/v1/gamer/properties]
+
+## Properties [/v2.6/gamer/properties/{domain}]
+
++ Parameters
+    + domain (required, string) ... the domain
 
 Properties are used to allow match making...
 They are related to a game.
@@ -924,13 +928,13 @@ Properties are basic type (number, stringn boolean) json
 + Request (application/json)
 
     + Headers
-    
+
             x-apikey : testgame-key
             x-apisecret : testgame-secret
             Authorization: Basic gamer_id:gamer_secret
 
     + Body
-        
+
             {
                 "Board": "river",
                 "Level": 20
@@ -939,7 +943,7 @@ Properties are basic type (number, stringn boolean) json
 
 + Response 200 (application/json)
 
-        { 
+        {
             "properties" : {
                 "Board": "river",
                 "Level": 20
@@ -954,14 +958,14 @@ Properties are basic type (number, stringn boolean) json
 + Request (application/json)
 
     + Headers
-    
+
             x-apikey : testgame-key
             x-apisecret : testgame-secret
             Authorization: Basic gamer_id:gamer_secret
 
 + Response 200 (application/json)
 
-        { 
+        {
             "properties" : {
                 "Board": "river",
                 "Level" : 20
@@ -974,14 +978,154 @@ Properties are basic type (number, stringn boolean) json
 + Request (application/json)
 
     + Headers
-    
+
             x-apikey : testgame-key
             x-apisecret : testgame-secret
             Authorization: Basic gamer_id:gamer_secret
 
 + Response 200 (application/json)
 
-        { 
+        {
+            "done": true
+        }
+
+## Properties [/v1/gamer/properties]
+
+Properties are used to allow match making...
+They are related to a game.
+
+### Set properties [POST]
+
+Properties are basic type (number, stringn boolean) json
+
++ Request (application/json)
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
+    + Body
+
+            {
+                "Board": "river",
+                "Level": 20
+                "Expert": false
+            }
+
++ Response 200 (application/json)
+
+        {
+            "properties" : {
+                "Board": "river",
+                "Level": 20
+                "Expert": false
+            },
+            "updated": true
+        }
+
+
+### Get properties [GET]
+
++ Request (application/json)
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        {
+            "properties" : {
+                "Board": "river",
+                "Level" : 20
+                "Expert" : false
+            }
+        }
+
+### delete properties [DELETE]
+
++ Request (application/json)
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        {
+            "done": true
+        }
+
+## Property [/v2.6/gamer/properties/{domain}/{key}]
+
+Properties are used to allow match making...
+They are related to a game.
+
++ Parameters
+    + domain (required, string) ... the domain
+    + key (required, string) ... name of the property
+
+### Set property [POST]
+
+Properties are basic type (number, string, boolean) or array of basic type
+
++ Request (application/json)
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
+    + Body
+
+            {
+                "value": "river",
+            }
+
++ Response 200 (application/json)
+
+        {
+            "done" : true
+        }
+
+
+### Get property [GET]
+
++ Request (application/json)
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        {
+            "Board": "river"
+        }
+
+
+### delete property [DELETE]
+
++ Request (application/json)
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        {
             "done": true
         }
 
@@ -1265,6 +1409,8 @@ This is not necessarily the highest score, but only the highest is stored.
 
 ### POST /v1/gamer/scores/{leaderbord}{?order}
 
+Note: this API is obsolete (please use the most recent version as documented above).
+
 this is not necessarily the highest score, but only the highest is stored.
 
 + Parameters
@@ -1344,6 +1490,8 @@ this is not necessarily the highest score, but only the highest is stored.
         
 ### GET /v1/gamer/scores/{leaderbord}{?order}{&type}{&page}{&count}
 
+Note: this API is obsolete (please use the most recent version as documented above).
+
 + Parameters
     + leaderbord (required, string) ... the board where the gamer score in
     + order = `hightolow` (optional, string) ... deprecated, defaults to leaderboard's ordering
@@ -1392,14 +1540,39 @@ this is not necessarily the highest score, but only the highest is stored.
         }  
 
 
-## GET /v1/gamer/bestscores
+## GET /v2.6/gamer/bestscores/{domain}
 
 ### Get all the gamer's bestscores 
+
++ Parameters
+    + domain (required, string) ... the domain used for this leaderboard
 
 + Request (application/json)
 
     + Headers
     
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization: Basic gamer_id:gamer_secret
+
++ Response 200 (application/json)
+
+        {
+            "easy" : { score:100, info : "desc" , timestamp : ""}
+            "meduim" : { score:20, info : "desc", timestamp : "" }
+            "hard" : { score:10, info : "desc", timestamp : "" }
+        }
+
+## GET /v1/gamer/bestscores
+
+Note: this API is obsolete (please use the most recent version as documented above).
+
+### Get all the gamer's bestscores
+
++ Request (application/json)
+
+    + Headers
+
             x-apikey : testgame-key
             x-apisecret : testgame-secret
             Authorization: Basic gamer_id:gamer_secret
