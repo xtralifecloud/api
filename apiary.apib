@@ -2214,6 +2214,9 @@ Or you could index gamer's properties for fast retrieval.
 
 So the API is very simple and quite generic.
 
+*Note: * the indexing API is an unauthenticated API: you don't have to be logged in as a user to use it. You don't need an
+`Authorization` HTTP header.
+
 ### POST /v1/index/{domain}/{indexName}
 
 #### Index a new object
@@ -2238,7 +2241,6 @@ properties are typed! So if `age` is an int, it must always be an int, or an err
 
             x-apikey : testgame-key
             x-apisecret : testgame-secret
-            Authorization: Basic gamer_id:gamer_secret
 
     + Body
 			{
@@ -2269,13 +2271,16 @@ properties are typed! So if `age` is an int, it must always be an int, or an err
 
 You can search documents in the index with this API. It allows you to make complex queries.
 See [the Elastic documentation](http://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html)
-to learn the full syntax. It's easy and quite powerful.
+to learn the full syntax for the `q` parameter. It's easy and quite powerful.
+
+You can also use the full Elastic search capabilities with full *query DSL* search. In this case, you'll send a json document instead of
+using the `q` and `sort` parameters. Please refer to [the Elastic full-body search documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html).
 
 + Parameters
     + domain (required, string, `private`) ... The domain
     + indexName (required, string, `matchIndex`) ... The index Name
-    + q (required, string, `rank:captain`) ... The query string
-    + sort (required, string, `["age"]`) ... a JSON array of properties names for sorting
+    + q (optional, string, `rank:captain`) ... The query string
+    + sort (optional, string, `["age"]`) ... a JSON array of properties names for sorting
     + from (optional, int, `0`) ... The first result index
     + max (optional, int, `10`) ... The number of results to return
 
@@ -2285,9 +2290,46 @@ to learn the full syntax. It's easy and quite powerful.
 
             x-apikey : testgame-key
             x-apisecret : testgame-secret
-            Authorization: Basic gamer_id:gamer_secret
 
     + Body
+
++ Response 200 (application/json)
+
+            { total: 1,
+              max_score: 1,
+              hits:
+               [ { _index: 'com.clanofthecloud.cloudbuilder.m3nsd85gnqd3',
+                   _type: 'matchIndex',
+                   _id: '55706319d11b8125d58c8abe',
+                   _score: 1,
+                   _source: {
+                        "rank": "captain",
+                        "age": 28,
+                        "world": "utopia",
+                        "payload": {
+                            "name": "Captain America",
+                            "lastPlayed": 1433428652427
+                        }
+                   }
+                 }
+               ]
+            }
+
++ Request (application/json)
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+
+    + Body
+            {
+                "query": {
+                    "term": {
+                        "rank": "captain"
+                    }
+                }
+            }
 
 + Response 200 (application/json)
 
@@ -2327,7 +2369,6 @@ find more than one element.
 
             x-apikey : testgame-key
             x-apisecret : testgame-secret
-            Authorization: Basic gamer_id:gamer_secret
 
     + Body
 
@@ -2370,7 +2411,6 @@ When you want to remove an index entry, use this API. If you just want to update
 
             x-apikey : testgame-key
             x-apisecret : testgame-secret
-            Authorization: Basic gamer_id:gamer_secret
 
     + Body
 
