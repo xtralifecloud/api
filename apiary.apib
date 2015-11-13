@@ -2243,18 +2243,21 @@ properties are typed! So if `age` is an int, it must always be an int, or an err
             x-apisecret : testgame-secret
 
     + Body
-			{
-			    "_id": '55706319d11b8125d58c8abe',
-			    "properties": {
-			        "rank": "captain",
-			        "age": 28,
-			        "world": "utopia"
-			    },
-			    "payload": {
-			        "name": "Captain America",
-			        "lastPlayed": 1433428652427
-			    }
-			}
+    
++ Response 200 (application/json)
+
+        {
+          "_id": '55706319d11b8125d58c8abe',
+          "properties": {
+            "rank": "captain",
+            "age": 28,
+            "world": "utopia"
+          },
+          "payload": {
+            "name": "Captain America",
+            "lastPlayed": 1433428652427
+            }
+        }
 
 + Response 200 (application/json)
 
@@ -2323,6 +2326,8 @@ using the `q` and `sort` parameters. Please refer to [the Elastic full-body sear
             x-apisecret : testgame-secret
 
     + Body
++ Response 200 (application/json)
+
             {
                 "query": {
                     "term": {
@@ -2414,11 +2419,10 @@ When you want to remove an index entry, use this API. If you just want to update
 
     + Body
 
-    + Response 200 (application/json)
++ Response 200 (application/json)
 
             { found: true,
               _index: 'com.clanofthecloud.cloudbuilder.m3nsd85gnqd3',
               _type: 'matchIndex',
               _id: '55706319d11b8125d58c8abe',
               _version: 3 }
-
