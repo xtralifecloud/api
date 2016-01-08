@@ -2426,3 +2426,65 @@ When you want to remove an index entry, use this API. If you just want to update
               _type: 'matchIndex',
               _id: '55706319d11b8125d58c8abe',
               _version: 3 }
+              
+# Group Batches
+
+Batches are used to run login on servers.
+
+We offer both authenticated and unauthenticated batches. In the former,
+the batch knows the identity of the player. In the latter, there's no
+identity of the caller. You can use unathenticated batches to implement custom
+login workflow for instance.
+
+### POST /v1/batch/{domain}/{batchName}
+
+#### Call an unauthenticated batch
+
+Use this API to call a batch before a player is authenticated.
+
+The Request body is a freeform json, passed to the `params.request` argument of the batch.
+
++ Parameters
+    + domain (required, string, `private`) ... The domain
+    + batchName (required, string, `myBatch`) ... The batch Name
+
++ Request (application/json)
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+
+    + Body
+    
++ Response 200 (application/json)
+
+        {
+          "whatever": "the batch returned"
+        }
+
+### POST /v1/gamer/{domain}/{batchName}
+
+#### Call an authenticated batch
+
+If you want to run a batch in the context of an authenticated user, use this route.
+`params.user_id` will contain the user_id of the calling user.
+
++ Parameters
+    + domain (required, string, `private`) ... The domain
+    + batchName (required, string, `myBatch`) ... The batch Name
+
++ Request (application/json)
+
+    + Headers
+
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+
+    + Body
+    
++ Response 200 (application/json)
+
+        {
+          "whatever": "the batch returned"
+        }
