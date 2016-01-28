@@ -229,6 +229,34 @@ Log a gamer out
             "message" : "Invalid App Credentials"
         }
 
+## POST /v1/gamer/convert
+
+Used to convert an account from a mean of identification to another. Typically, one could want to convert an anonymous account to an e-mail based one, so that later the user would be able to log in through his e-mail address.
+
++ Request (application/json)
+
+    + Headers
+    
+            x-apikey : testgame-key
+            x-apisecret : testgame-secret
+            Authorization : Basic gamer_id:gamer_secret
+    + Body
+        
+            {
+                "network": "email",
+                "id": "user@localhost.localdomain",
+                "secret": "password"
+            }
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+    
+            {
+                "done": 1,
+                "gamer": { /* updated gamer as with login */ }
+            }
+
 ## POST /v1/gamer/unlink
 
 Used to unlink a user account from Facebook or Google+ credentials.
@@ -784,11 +812,11 @@ The balance is also returned each time you create a new transaction
 
 ## Properties [/v2.6/gamer/properties/{domain}]
 
-+ Parameters
-    + domain (required, string) ... the domain
-
 Properties are used to allow match making...
 They are related to a game.
+
++ Parameters
+    + domain (required, string) ... the domain
 
 ### Set properties [POST]
 
