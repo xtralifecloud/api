@@ -687,7 +687,7 @@ You can use domains to send messages accross games (or use <code>private</code> 
 Normally, you’d setup a loop to call <code>receive</code> and deliver messages to your game asynchronously.</p>
 <p><code>Receive</code> will block for a specified amount of time (with <code>?timeout=ms</code>) or 50 seconds (the default), and will be unblocked if a message is received, or if the call times out.
 When a message is received, the HTTP status code is <code>200</code>. If it returns because of the timeout, the response code is <code>204</code>.</p>
-<p>To guarantee delivery, acknowledgement is necessary, but you can use automatic acknoledgement (<code>?ack=auto</code>).
+<p>To guarantee delivery, acknowledgement is necessary, but you can use automatic acknowledgement (<code>?ack=auto</code>).
 If you want to ack messages, pass <code>?ack=&lt;messageId&gt;</code> where <code>messageID</code> is the ID of the latest received message.
 If you don’t specify an <code>?ack</code> parameter, the message is received with no ackowledgement (to bootstrap the loop).</p>
 <p>Choose if you want auto or acknowlegement as it can get hairy to mix both.</p>
